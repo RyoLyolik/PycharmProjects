@@ -7,7 +7,13 @@ import requests
 
 class Commands:
     def __init__(self, command, users, ids, n):
-        self.command_detect(command, users, ids, n)
+        self.check_message()
+
+    def check_message(self, command, users, ids, n):
+        if '|_|_|' in command:
+            return 'недопустимы формат сообщения'
+        else:
+            self.command_detect(command, users, ids, n)
 
     def beauty(self, num):
         end = ''
@@ -101,7 +107,8 @@ class Commands:
                             m = 50
                             summ *= m
                         users[n][1] = str(float(users[n][1]) + summ)
-                        return 'Вам попался (х' + str(m) + ')' + '\n' + 'Ваш баланс: ' + self.beauty(int(float(users[n][1])))
+                        return 'Вам попался (х' + str(m) + ')' + '\n' + 'Ваш баланс: ' + self.beauty(
+                            int(float(users[n][1])))
 
 
         elif body.lower() == 'работать':
@@ -138,17 +145,17 @@ class Commands:
                     users[n][1] = str(float(users[n][1]) + p)
                     users[n][3] = str(60)
                     return 'Вы получили ' + self.beauty(
-                                  p) + " $" + '\n' + 'Ваш баланс: ' + self.beauty(
-                                  int(float(users[n][1])))
+                        p) + " $" + '\n' + 'Ваш баланс: ' + self.beauty(
+                        int(float(users[n][1])))
 
 
                 else:
                     p = random.choice([2, 2, 10, 10, 10, 50, 50, 100])
                     users[n][2] = str(float(users[n][2]) + p)
                     users[n][3] = str(60)
-                    return  'Вы получили ' + self.beauty(
-                                  p) + " рейтинга" + '\n' + 'Ваш рейтинг ' + self.beauty(
-                                  int(float(users[n][2])))
+                    return 'Вы получили ' + self.beauty(
+                        p) + " рейтинга" + '\n' + 'Ваш рейтинг ' + self.beauty(
+                        int(float(users[n][2])))
 
             else:
                 return 'До бонуса осталось:' + str(int(users[n][3]))
@@ -166,7 +173,7 @@ class Commands:
 
             users[n][-1] = str(' '.join(body.split()[1:]))
             return 'Имя изменено. Теперь я буду обращаться к вам, как ' + ' '.join(
-                                            body.split()[1:])
+                body.split()[1:])
 
 
         elif body.lower() == 'топ':
@@ -198,15 +205,15 @@ class Commands:
 
         elif body.lower() == 'помощь создать':
 
-            if users[n][5] == 'Admin': #  TODO
+            if users[n][5] == 'Admin':  # TODO
                 return 'Данная функция находится в активной разработке'
 
         elif body.lower() == 'профиль':
             return 'Ваш профиль, ' + users[n][-1] + ':\n1. Ваш id: ' + users[n][
-                                            0] + '\n2. Баланс:' + self.beauty(
-                                            str(int(float(users[n][1])))) + '\n3. В банке ' + self.beauty(
-                                            str(int(float(users[n][8])))) + '\n4. Рейтинг: ' + users[n][
-                                                       2] + '\n5. Привилегия: ' + users[n][5] + '\n6. Голод: ' + users[n][14]
+                0] + '\n2. Баланс:' + self.beauty(
+                str(int(float(users[n][1])))) + '\n3. В банке ' + self.beauty(
+                str(int(float(users[n][8])))) + '\n4. Рейтинг: ' + users[n][
+                       2] + '\n5. Привилегия: ' + users[n][5] + '\n6. Голод: ' + users[n][14]
 
 
 
@@ -214,16 +221,7 @@ class Commands:
 
 
         elif body.lower().split()[:2] == ['создать', 'команду']:
-            return 'Данная функция находится в активной разработке' #  TODO
-            # if users[n][5] == 'Admin':
-            #     all = body.lower().split()
-            #     if all[2] == 'рандом':
-            #         cg.random(all[3], all[4])
-            #         vk.method('messages.send', {'peer_id': id, 'message': 'Готово'})
-            #     elif all[2] == '50%50':
-            #         cg.halfchance(all[3], all[4])
-            #         vk.method('messages.send', {'peer_id': id, 'message': 'Готово'})
-
+            return 'Данная функция находится в активной разработке'  # TODO
 
         elif len(body.split()) > 1 and body.lower().split()[0] == 'получить':
 
@@ -241,7 +239,8 @@ class Commands:
                 users[n][1] = str(int(float(users[n][1])) - int(g[2]))
                 users[ids.index(g[1])][1] = str(int(float(users[ids.index(g[1])][1])) + int(g[2]))
                 replace_line('users.txt', ids.index(str(g[1])), ','.join(users[ids.index(g[1])]) + '\n')
-                return 'Вы передали игроку ' + users[ids.index(g[1])][-1] + ' ' + g[2] + ' $' + '|_|_|' + 'Вам передал ' + users[n][-1] + ' ' + g[2] + ' $' #  TODO
+                return 'Вы передали игроку ' + users[ids.index(g[1])][-1] + ' ' + g[
+                    2] + ' $' + '|_|_|' + 'Вам передал ' + users[n][-1] + ' ' + g[2] + ' $'  # TODO
             elif g[2].isdigit() and int(float(users[n][1])) < int(g[2]):
                 return 'Недостаточно денег'
             elif not g[1] in ids:
@@ -259,9 +258,9 @@ class Commands:
             if int(float(users[n][1])) >= int(float(body.lower().split()[2])):
                 users[n][8] = str(int(float(users[n][8])) + int(float(body.lower().split()[2])))
                 users[n][1] = str(int(float(users[n][1])) - int(float(body.lower().split()[2])))
-                vk.method('messages.send', {'peer_id': id, 'message': 'Готово'})
+                return 'Готово'
             else:
-                vk.method('messages.send', {'peer_id': id, 'message': 'Недостаточно денег'})
+                return 'Готово'
 
 
         elif body.lower().split()[:2] == ['банк', 'снять'] and len(body.lower().split()) >= 3:
@@ -269,7 +268,7 @@ class Commands:
             summ = body.split()[2]
             # print(summ)
             if (str(summ) != 'все' and str(summ) != 'всё') and not str(summ).isdigit():
-                vk.method('messages.send', {'peer_id': id, 'message': 'Так нельзя'})
+                return 'Так нельзя'
             else:
                 if not str(summ).isdigit():
                     summ = float(users[n][8])
@@ -278,9 +277,9 @@ class Commands:
                 if summ <= int(float(users[n][8])):
                     users[n][8] = str(int(float(users[n][8])) - int(summ))
                     users[n][1] = str(int(float(users[n][1])) + int(summ))
-                    vk.method('messages.send', {'peer_id': id, 'message': 'Готово'})
+                    return 'Готово'
                 else:
-                    vk.method('messages.send', {'peer_id': id, 'message': 'Недостаточно денег в банке'})
+                    return 'Недостаточно денег в банке'
 
 
         elif len(body.split()) > 1 and body.split()[0].lower() == 'edit_profile' and len(body.split()) == 4 and (
@@ -289,63 +288,56 @@ class Commands:
             args = body.split()[1:]
 
             users[ids.index(args[0])][int(args[1])] = args[2]
-            vk.method('messages.send', {'peer_id': id,
-                                        'message': '[id' + users[ids.index(args[0])][0] + '|' +
-                                                   users[ids.index(args[0])][-1] + ']' + ' теперь имеет ' + args[
-                                                       2] + ' ' + typer(args[1])})
-            replace_line('users.txt', ids.index(str(args[0])), ','.join(users[ids.index(args[0])]) + '\n')
+
+            return '[id' + users[ids.index(args[0])][0] + '|' + users[ids.index(args[0])][-1] + ']' + ' теперь имеет ' + \
+                   args[
+                       2] + ' ' + self.typer(args[1])
 
 
         elif body.lower() == 'prefix' and (users[n][0] == '502004139' or users[n][0] == '155118230'):
-
-            pref = [str(i) + ' - ' + typer(str(i)) for i in range(len(users[0]))]
-            vk.method('messages.send', {'peer_id': id, 'message': '\n'.join(pref)})
+            return '\n'.join(self.pref)
 
         elif body.lower() == 'get_all_ids' and users[n][5] == 'Admin':
-
-            vk.method('messages.send', {'peer_id': id, 'message': ' '.join(ids)})
+            return ' '.join(ids)
         elif body.lower() == 'get_all_users' and users[n][5] == 'Admin':
 
             uss = [','.join(i) for i in users]
             uss = '\n'.join(uss)
-            vk.method('messages.send', {'peer_id': id, 'message': uss})
+            return uss
 
         elif body.lower() == 'юзеры' and users[n][5] == 'Admin':
 
             uss = ["[id" + i[0] + "|" + i[-1] + "] \n" + 'id: ' + i[0] + '\n' + 'привилегия: ' + i[
                 5] + '\nденьги,рейтинг:' + i[1] + ',\t' + i[2] + '\n\n' for i in users if len(i) > 1]
             uss = '\n'.join(uss)
-            vk.method('messages.send', {'peer_id': id, 'message': uss})
+            return uss
 
         elif body.lower() == 'get_all_admins' and users[n][5] == 'Admin':
 
             adm = ["[id" + i[0] + "|" + i[-1] + "] " + i[0] for i in users if len(i) > 1 and i[5] == 'Admin']
             adm = '\n'.join(adm)
-            vk.method('messages.send', {'peer_id': id, 'message': adm})
+            return adm
 
         elif body.lower() == 'yayangi':
 
             if users[n][12] == '0':
                 users[n][12] = '1'
                 users[n][2] = str(float(users[n][2]) + 50)
-                vk.method('messages.send', {'peer_id': id, 'message': 'Воу, вы нашли читкод, награда 50 рейтинга'})
+                return 'Воу, вы нашли читкод, награда 50 рейтинга'
             else:
-                vk.method('messages.send', {'peer_id': id, 'message': 'Ты уже вводил этот читкод'})
+                return 'Ты уже вводил этот читкод'
 
         elif body.lower() == 'get_me' and users[n][5] == 'Admin':
 
             getting = [typer(str(i)) + ' ' + str(users[n][i]) + '\n' for i in range(len(users[n]))]
-            vk.method('messages.send', {'peer_id': id, 'message': ''.join(getting)})
+            return ''.join(getting)
 
         elif body.lower().split()[:2] == ['написать', 'админу']:
 
             message = body.split()[2:]
             di = str(users[n][0])
             di = "[id" + users[n][0] + "|" + users[n][-1] + " " + users[n][0] + "]"
-            # print(di)
-
-            vk.method('messages.send', {'peer_id': '155118230', 'message': ' '.join(message) + "\nby: " + di})
-            vk.method('messages.send', {'peer_id': id, 'message': 'Готово'})
+            return 'Готово' + '|_|_|' + ' '.join(message) + "\nby: " + di
 
 
 
@@ -368,9 +360,9 @@ class Commands:
 
                 vk.method('messages.send', {'peer_id': id,
                                             'message': rus_text + '\n\nПереведено сервисом «Яндекс.Переводчик»\nhttp://translate.yandex.ru/'})
+                return rus_text + '\n\nПереведено сервисом «Яндекс.Переводчик»\nhttp://translate.yandex.ru/'
         elif body.lower() == 'языки':
-
-            vk.method('messages.send', {'peer_id': id, 'message': 'азербайджанский	az	\nмалаялам	ml\n\
+            return 'азербайджанский	az	\nмалаялам	ml\n\
         албанский	sq	\nмальтийский	mt\n\
         амхарский	am	\nмакедонский	mk\n\
         английский	en	\nмаори	mi\n\
@@ -416,7 +408,7 @@ class Commands:
         литовский	lt	\nэсперанто	eo\n\
         люксембургский	lb	\nяванский	jv\n\
         малагасийский	mg	\nяпонский	ja\n\
-        малайский	ms	'})
+        малайский	ms'
 
 
         elif len(body.split()) == 2 and body.lower().split()[0] == 'граф':
