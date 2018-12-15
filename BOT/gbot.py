@@ -1,14 +1,14 @@
-import vk_api
-import time
-import random
-import commands
 import json
-import requests
+import sqlite3
+
+import commands
+import vk_api
+
 # import speech
-import apiai
 
 vk = vk_api.VkApi(token='9348c5fa44e74d04840ce92338aa10d7dc9784d626756f952ad8d2266a2e5417965ee306181c58111a75b')
 vk._auth_token()
+
 
 def update_base():
     conn = sqlite3.connect('USERS.sqlite')
@@ -46,5 +46,8 @@ keyboard = {
 
 keyboard = json.dumps(keyboard, ensure_ascii=False).encode('utf-8')
 keyboard = str(keyboard.decode('utf-8'))
-
-print(update_base())
+while True:
+    com = input()
+    users = update_base()
+    answer = commands.check_message(com, users, [155118230], 0)
+    print(answer)
