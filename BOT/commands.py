@@ -251,9 +251,7 @@ class Commands:
 
 
         elif body.lower() == 'банк':
-
-            vk.method('messages.send',
-                      {'peer_id': id, 'message': 'В банке ' + self.beauty(str(int(float(users[n][8]))))})
+            return 'В банке ' + self.beauty(str(int(float(users[n][8]))))
 
         elif body.lower().split()[:2] == ['банк', 'положить'] and len(body.lower().split()) >= 3 and \
                 body.lower().split()[2].isdigit():
