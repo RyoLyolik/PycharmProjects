@@ -1,0 +1,19 @@
+{
+    "502004139":
+    {
+        "money": 99999,
+        "rating": 1230.25,
+        "bonus": -10,
+        "work":-10,
+        "priv":"Admin",
+        "ins": 1,
+        "pay":15625.0,
+        "bank":1191817653772711.8,
+        "nothing":0,
+        "do_work":1,
+        "x50":1,
+        "cheats":1,
+        "rating_m":6.25,
+        "name": "admin"
+    }
+}
