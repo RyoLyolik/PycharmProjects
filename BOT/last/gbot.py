@@ -8,6 +8,7 @@ import grouptest
 # import speech
 import fx
 import apiai
+from yandex import Translater
 
 
 def convert_base(num, from_base=10, to_base=10):
@@ -24,8 +25,6 @@ def convert_base(num, from_base=10, to_base=10):
         print(alphabet[n % to_base], 'alpabet %')
         return convert_base(n // to_base, 10, to_base) + alphabet[n % to_base]
 
-
-from yandex import Translater
 
 token = 'trnsl.1.1.20180822T035034Z.c4e6b0734a1501db.3c10535039452db4d70963681df09234674e4b33'
 all_lang = ['az', 'sq', 'am', 'en', 'ar', 'hy', 'af', 'eu', 'ba', 'be', 'bn', 'my',
@@ -237,7 +236,7 @@ while True:
                 #     replace_line('users.txt', n, ','.join(users[n]) + '\n')
                 users[n][1] = str(round(float(users[n][1]), 2))
                 users[n][8] = str(round(float(users[n][8]), 2))
-                users[n][13] = str(round(float(users[n][13]), 2))
+                users[n][12] = str(round(float(users[n][12]), 2))
                 users[n][7] = str(round(float(users[n][7]), 2))
                 if float(users[n][1]) >= 99999999999999:
                     users[n][1] = '99999999999999'
@@ -313,8 +312,8 @@ while True:
                                     m = 5
                                     summ *= m
                                 elif ch == 50:
-                                    if users[n][11] == '0':
-                                        users[n][11] = '1'
+                                    if users[n][10] == '0':
+                                        users[n][10] = '1'
                                         users[n][2] = str((int(float(users[n][2])) + 50))
                                         vk.method('messages.send', {'peer_id': id,
                                                                     'message': 'Ура, вы первый раз выбили х50, награда 50 рейтинга!'})
@@ -327,30 +326,30 @@ while True:
 
                 elif body.lower() == 'работать':
                     ans = True
-                    if int(users[n][14]) <= 2:
+                    if int(users[n][13]) <= 2:
                         vk.method('messages.send', {'peer_id': id,
                                                     'message': 'Вам нужно срочно поесть'})
                     else:
                         if int(users[n][4]) <= 0 and int(float(users[n][6])) == 10:
                             vk.method('messages.send', {'peer_id': id,
                                                         'message': 'Вы устроились на новую работу. Награда ' + str(
-                                                            float(users[n][13]) * 10) + ' рейтинга'})
-                            users[n][2] = str(float(users[n][2]) + float(users[n][13]) * 10)
+                                                            float(users[n][12]) * 10) + ' рейтинга'})
+                            users[n][2] = str(float(users[n][2]) + float(users[n][12]) * 10)
                             users[n][7] = str((int(float(users[n][7])) * 2.5))
-                            if float(users[n][13]) < 50:
-                                users[n][13] = str(float(users[n][13]) * 2.5)
+                            if float(users[n][12]) < 50:
+                                users[n][12] = str(float(users[n][12]) * 2.5)
                             users[n][6] = '0'
                         elif int(float(users[n][6])) != 10 and int(users[n][4]) <= 0:
                             users[n][6] = str((int(float(users[n][6])) + 1))
-                            users[n][14] = str((int(float(users[n][14])) - 1))
+                            users[n][13] = str((int(float(users[n][13])) - 1))
                             users[n][1] = str(int(float(users[n][1])) + int(float(users[n][7])))
-                            users[n][2] = str(float(users[n][2]) + float(users[n][13]))
+                            users[n][2] = str(float(users[n][2]) + float(users[n][12]))
                             vk.method('messages.send', {'peer_id': id,
                                                         'message': 'Вы заработали ' + users[n][7] + '$ ' + 'и ' + users[n][
                                                             13] + ' рейтинга'})
                             users[n][4] = str(60)
-                            if users[n][10] == '0':
-                                users[n][10] = '1'
+                            if users[n][9] == '0':
+                                users[n][9] = '1'
                                 users[n][2] = str((int(float(users[n][2])) + 20))
                                 vk.method('messages.send',
                                           {'peer_id': id, 'message': 'Ура, вы поработали 1-ый раз.\nНаграда 20 рейтинга'})
@@ -399,7 +398,6 @@ while True:
                                                 'message': 'Имя изменено. Теперь я буду обращаться к вам, как ' + ' '.join(
                                                     body.split()[1:])})
 
-
                 elif body.lower() == 'топ':
                     ans = True
                     new_per = users[:]
@@ -445,7 +443,7 @@ while True:
                                                     str(int(float(users[n][1])))) + '\n3. В банке ' + commands.bt(
                                                     str(int(float(users[n][8])))) + '\n4. Рейтинг: ' + users[n][
                                                                2] + '\n5. Привилегия: ' + users[n][5] + '\n6. Голод: ' +
-                                                           users[n][14]})
+                                                           users[n][13]})
 
 
 
@@ -575,8 +573,8 @@ while True:
 
                 elif body.lower() == 'yayangi':
                     ans = True
-                    if users[n][12] == '0':
-                        users[n][12] = '1'
+                    if users[n][11] == '0':
+                        users[n][11] = '1'
                         users[n][2] = str(float(users[n][2]) + 50)
                         vk.method('messages.send', {'peer_id': id, 'message': 'Воу, вы нашли читкод, награда 50 рейтинга'})
                     else:
@@ -727,7 +725,7 @@ while True:
                                                     "message": ":( недостаточно денег, вы можете начать игру сначала, написав заново <ваш id>"})
                     else:
                         users[n][1] = str(float(users[n][1]) - 500)
-                        users[n][14] = str(10)
+                        users[n][13] = str(10)
                         vk.method("messages.send", {"peer_id": id, "message": "Вы поели на 500$"})
 
                 elif body.lower() == 'заново ' + users[n][0]:
@@ -736,8 +734,7 @@ while True:
 
                     users[n][1], users[n][2], users[n][3], users[n][4], users[n][6], users[n][7], users[n][
                         8] = '0', '0', '10', '10', '0', '1000', '0'
-                    users[n][9], users[n][10], users[n][11], users[n][12], users[n][13], users[n][
-                        14] = '0', '0', '0', '0', '1', '10'
+                    users[n][9], users[n][10], users[n][10], users[n][11], users[n][12] = '0', '0', '0', '1', '10'
                     vk.method("messages.send",
                               {"peer_id": id, "message": "Ваш аккаунт сброшен. Сохранено: привилегия, имя"})
 
