@@ -1,4 +1,3 @@
-import config
 import json
 import sqlite3
 import commands

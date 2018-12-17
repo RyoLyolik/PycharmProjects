@@ -1,0 +1,41 @@
+Made By: Aiden Ward
+YouTube: https://www.youtube.com/user/DlcEnergy
+
+To run:
+Install Python 3!
+And Pyglet!
+
+Downloads: (Direct Links) (These are the ones i have)
+https://www.python.org/ftp/python/3.4.1/python-3.4.1.msi
+https://bitbucket.org/pyglet/pyglet/downloads/pyglet-1.2.4.zip
+
+After installing Python, put the "pyglet" folder in this directory:
+C:\Python34\Lib\site-packages
+P.S. Not the "pyglet-1.2.4" folder. the "pyglet" one inside it. lol
+
+Controls:
+WSAD: Move Player
+KEY E: Toggle Mouse
+SPACE: Fly Up
+LSHIFT: Fly Down
+MOUSE LEFT: Destroy
+MOUSE RIGHT: Place
+
+What you can learn from these scripts:
+
+Minecraft 1 (Basic Start):
+   A basic block engine!
+
+Minecraft 2 (First Water):
+   Added animated water blocks!
+
+Minecraft 3 (Perlin Noise):
+   Terrain Generation!
+
+Minecraft 4 (Trees and Grass):
+   Self Explanatory here! :)
+
+Minecraft 5 (Chunks and Swimming):
+   Load world in a given chunk size!
+   And swimming in water!
+
