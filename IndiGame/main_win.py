@@ -7,10 +7,10 @@ import math
 pygame.init()
 
 size = w, h = 720, 480
-speed = [random.choice(range(1, 5)), random.choice(range(1, 5))]  # x speed , y speed
-speed_1 = [random.choice(range(1, 5)), random.choice(range(1, 5))]
-speed_2 = [random.choice(range(1, 5)), random.choice(range(1, 5))]
-speed_3 = [random.choice(range(1, 5)), random.choice(range(1, 5))]
+speed = [random.choice(range(1, 10)), random.choice(range(1, 10))]  # x speed , y speed
+speed_1 = [random.choice(range(1, 10)), random.choice(range(1, 10))]
+speed_2 = [random.choice(range(1, 10)), random.choice(range(1, 10))]
+speed_3 = [random.choice(range(1, 10)), random.choice(range(1, 10))]
 
 screen = pygame.display.set_mode(size)
 
@@ -278,5 +278,13 @@ while pygame.event.wait().type != pygame.QUIT:
     draw_ball()
     if flipping:
         pygame.display.flip()
+    else:
+        x = input()
+        if x != '':
+            flipping = True
+            ballrect = pygame.draw.rect(screen, (200, 100, 150), (190, 60, ball_size, ball_size), 0)
+            ballrect_1 = pygame.draw.rect(screen, (200, 100, 150), (20, 20, ball_size, ball_size), 0)
+            ballrect_2 = pygame.draw.rect(screen, (200, 100, 150), (300, 290, ball_size, ball_size), 0)
+            ballrect_3 = pygame.draw.rect(screen, (200, 100, 150), (300, 290, ball_size, ball_size), 0)
 
 pygame.quit()
