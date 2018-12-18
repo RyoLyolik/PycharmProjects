@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import sys
 screen = None
 class Window:
     def __init__(self):
@@ -9,7 +10,8 @@ class Window:
         size = w, h = 720, 480
         screen = pygame.display.set_mode(size)
         self.player = Player()
-        self.enemy = Enemy()
+        self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
+        self.enemy_list = [Enemy(random.choice(range(0,656)),random.choice(range(0,416))),Enemy(random.choice(range(0,656)),random.choice(range(0,416))),Enemy(random.choice(range(0,656)),random.choice(range(0,416))),Enemy(random.choice(range(0,656)),random.choice(range(0,416))),Enemy(random.choice(range(0,656)),random.choice(range(0,416))),Enemy(random.choice(range(0,656)),random.choice(range(0,416)))]
         pygame.init()
 
         self.screen_update()
@@ -18,14 +20,30 @@ class Window:
         while pygame.event.wait().type != pygame.QUIT:
             self.key_events()
             self.player.draw_player()
-            self.enemy.draw_enemy()
-            self.colliding(self.player.player, self.enemy.player)
+            for enemy in self.enemy_list:
+                enemy.draw_enemy()
+                enemy.enemy_moving()
+                self.check_go_out(enemy)
+                self.colliding(self.player.player, enemy.player)
             pygame.display.flip()
             screen.fill((0,0,0))
 
     def colliding(self, ob1, ob2):
         if ob1.colliderect(ob2):
-            screen.fill(pygame.Color('red'), ob1.clip(ob2))
+            screen.fill(pygame.Color('#ffcc00'), ob1.clip(ob2))
+        # print(ob1.clip(ob2))
+
+    def check_go_out(self, ob):
+        print(self.main_rect.colliderect(ob.player))
+        if self.main_rect.colliderect(ob.player) == 0:
+            # if ob.speed > 0:
+            #     ob.speed = -random.choice(range(0,5))
+            # else:
+            #     ob.speed = random.choice(range(0,5))
+            if ob.player.left <= self.main_rect.left or ob.player.right >= self.main_rect.right:
+                ob.speed = -ob.speed
+            if ob.player.top <= self.main_rect.top or ob.player.bottom >= self.main_rect.bottom:
+                ob.speed2 = -ob.speed2
 
     def key_events(self):
         if pygame.key.get_pressed()[pygame.K_LEFT]:
@@ -55,7 +73,7 @@ class Player:
         self.pos_y = 60
         self.player = pygame.draw.rect(screen, (200, 100, 150),
                                        (self.pos_x, self.pos_y, self.player_size, self.player_size), 0)
-        self.draw_player()
+        # self.draw_player()
 
 
     def draw_player(self):
@@ -63,16 +81,24 @@ class Player:
 
 
 class Enemy(Player):
-    def __init__(self):
+    def __init__(self, pos_x, pos_y):
         super().__init__()
-        self.pos_x = 400
-        self.pos_y = 150
+        self.speed = random.choice(range(-5,5))
+        self.speed2 = random.choice(range(-5, 5))
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.player = pygame.draw.rect(screen, (200, 100, 150),
                                        (self.pos_x, self.pos_y, self.player_size, self.player_size), 0)
+        self.enemy_moving()
 
     def draw_enemy(self):
         super().draw_player()
 
+    def enemy_moving(self):
+        self.player = self.player.move([self.speed, self.speed2])
+
+
 
 if __name__ == '__main__':
     win = Window()
+    pygame.quit()
