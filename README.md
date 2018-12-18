@@ -3,7 +3,7 @@
   gbot.py - for vkontakte
 
 # IndiGame
-  at the moment its just train for me
+  at the moment its just training for me
  
  # TelegramBot
   bot with using dialog flow
