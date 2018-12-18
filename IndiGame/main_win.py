@@ -24,13 +24,19 @@ class Window:
                 enemy.draw_enemy()
                 enemy.enemy_moving()
                 self.check_go_out(enemy)
-                self.colliding(self.player.player, enemy.player)
+                self.colliding(self.player, enemy)
             pygame.display.flip()
             screen.fill((0,0,0))
 
     def colliding(self, ob1, ob2):
-        if ob1.colliderect(ob2):
-            screen.fill(pygame.Color('#ffcc00'), ob1.clip(ob2))
+        if ob1.player.colliderect(ob2.player):
+            screen.fill(pygame.Color('#ffcc00'), ob1.player.clip(ob2.player))
+
+        if ob1.player.colliderect(ob2.player):
+            if ob2.player.left < ob1.player.left or ob2.player.right > ob1.player.right:
+                ob2.speed = -ob2.speed
+            if ob2.player.top < ob1.player.top or ob2.player.bottom > ob1.player.bottom:
+                ob2.speed2 = -ob2.speed2
         # print(ob1.clip(ob2))
 
     def check_go_out(self, ob):
@@ -40,27 +46,26 @@ class Window:
             #     ob.speed = -random.choice(range(0,5))
             # else:
             #     ob.speed = random.choice(range(0,5))
-            if ob.player.left <= self.main_rect.left or ob.player.right >= self.main_rect.right:
+            if ob.player.left < self.main_rect.left or ob.player.right > self.main_rect.right:
                 ob.speed = -ob.speed
-            if ob.player.top <= self.main_rect.top or ob.player.bottom >= self.main_rect.bottom:
+            if ob.player.top < self.main_rect.top or ob.player.bottom > self.main_rect.bottom:
                 ob.speed2 = -ob.speed2
 
     def key_events(self):
         if pygame.key.get_pressed()[pygame.K_LEFT]:
-            self.move(self.player.player, [-self.player.speed,0])
+            self.move(self.player, [-self.player.speed,0])
 
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            self.move(self.player.player, [self.player.speed,0])
+            self.move(self.player, [self.player.speed,0])
 
         elif pygame.key.get_pressed()[pygame.K_UP]:
-            self.move(self.player.player, [0,-self.player.speed])
+            self.move(self.player, [0,-self.player.speed])
 
         elif pygame.key.get_pressed()[pygame.K_DOWN]:
-            self.move(self.player.player, [0,self.player.speed])
+            self.move(self.player, [0,self.player.speed])
 
     def move(self, ob, speed):
-        # ob = ob.move(speed) # DONT WORK, WHY ??
-        self.player.player = self.player.player.move(speed)
+        ob.player = ob.player.move(speed)
 
 
 class Player:
@@ -68,7 +73,7 @@ class Player:
         global screen
 
         self.player_size = 64
-        self.speed = 2
+        self.speed = 3
         self.pos_x = 190
         self.pos_y = 60
         self.player = pygame.draw.rect(screen, (200, 100, 150),
