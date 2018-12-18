@@ -26,11 +26,20 @@ class Window:
     def key_events(self):
         # print(pygame.key.get_pressed())
         if pygame.key.get_pressed()[pygame.K_LEFT]:
-            self.move(self.player.player, self.player.speed)
+            self.move(self.player.player, [-self.player.speed,0])
+
+        elif pygame.key.get_pressed()[pygame.K_RIGHT]:
+            self.move(self.player.player, [self.player.speed,0])
+
+        elif pygame.key.get_pressed()[pygame.K_UP]:
+            self.move(self.player.player, [0,-self.player.speed])
+
+        elif pygame.key.get_pressed()[pygame.K_DOWN]:
+            self.move(self.player.player, [0,self.player.speed])
 
     def move(self, ob, speed):
-        ob = ob.move(speed, speed)
-        self.player.player = self.player.player.move([self.player.speed, self.player.speed])
+        # ob = ob.move(speed) # DONT WORK, WHY ??
+        self.player.player = self.player.player.move(speed)
         print(self.player.player.left)
 class Player:
     def __init__(self):
