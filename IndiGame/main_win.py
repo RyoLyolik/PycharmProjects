@@ -2,6 +2,8 @@ import pygame
 import random
 import math
 import sys
+from player import Player
+from blocks import  *
 screen = None
 size = w, h, = 720,480
 player_sprites = ['player_sprite__stay_0.png']
@@ -10,7 +12,7 @@ class Window:
         global screen
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption('IndiGame')
-        self.player = Player()
+        self.player = Player(screen)
         self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
         # self.enemy_list = [Enemy(), Enemy(), Enemy(), Enemy()]
         self.level_data = []
@@ -26,7 +28,7 @@ class Window:
         level = file.read().split('\n')
         for block in level:
             block = block.split()
-            self.level_data.append(BlockUsual(int(block[0]),int(block[1]), int(block[2])))
+            self.level_data.append(BlockUsual(int(block[0]),int(block[1]), int(block[2]), screen))
 
 
     def screen_update(self):
@@ -43,7 +45,7 @@ class Window:
             #     self.check_go_out(enemy)
             #     self.colliding(self.player, enemy)
             screen.fill((0, 0, 0))
-            self.player.draw_player(0)
+            self.player.draw_player(screen)
             self.key_events()
             for obj in self.level_data:
                 obj.draw()
@@ -134,93 +136,6 @@ class Window:
 
         else:
             self.player.speed = 0
-
-
-
-
-class Player:
-    def __init__(self):
-        global screen, player_sprites
-
-        self.player_size = 64
-        self.speed = 0
-        self.pos_x = 190
-        self.pos_y = 60
-
-
-        self.double_jump = 2
-        self.in_air = True
-        self.stopped = False
-        self.up = False
-
-        self.gravity_force = 1
-        self.speed_down = 0
-
-        self.player = pygame.draw.rect(screen, (200, 100, 150),
-                                       (self.pos_x, self.pos_y, self.player_size, self.player_size), 0)
-        # self.draw_player()
-
-
-    def draw_player(self, i):
-        # self.player_image = pygame.image.load(player_sprites[i])
-        # self.player = self.player_image.get_rect()
-        self.player = pygame.draw.rect(screen, (150,100,70), (self.player.left, self.player.top, self.player_size, self.player_size), 0)
-
-        self.move([self.speed,self.speed_down])
-        self.gravity()
-
-    def move(self, speed):
-        self.player = self.player.move(speed)
-
-    def gravity(self):
-        if self.player.bottom < h - 40 and self.stopped is False:
-            self.in_air = True
-            self.speed_down += self.gravity_force
-            if self.speed_down < 0:
-                self.up = True
-            else:
-                self.up = False
-        else:
-            self.double_jump = 0
-            self.in_air = False
-            self.speed_down = 0
-            self.stopped = True
-            self.player.bottom = h - 41
-
-
-    def limit_reached(self):
-        pass
-
-
-class BlockUsual:
-    def __init__(self, pos_x, pos_y, size):
-        self.size = size
-        self.shell = pygame.draw.rect(screen, (255,255,255), (pos_x, pos_y, size, size), 0)
-
-    def draw(self):
-        self.shell = pygame.draw.rect(screen, (255,255,255), (self.shell.left, self.shell.top, self.size,self.size), 0)
-
-
-
-
-# class Enemy(Player):
-#     def __init__(self):
-#         super().__init__()
-#         self.speed = random.choice(range(-5,5))
-#         self.speed2 = random.choice(range(-5, 5))
-#         self.pos_x = random.choice(range(64,656))
-#         self.pos_y = random.choice(range(64,416))
-#         self.player = pygame.draw.rect(screen, (200, 100, 150),
-#                                        (self.pos_x, self.pos_y, self.player_size, self.player_size), 0)
-#         self.enemy_moving()
-#
-#     def draw_enemy(self):
-#         super().draw_player()
-#
-#     def enemy_moving(self):
-#         self.player = self.player.move([self.speed, self.speed2])
-
-
 
 if __name__ == '__main__':
     win = Window()
