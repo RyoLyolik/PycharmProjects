@@ -15,7 +15,6 @@ class Window:
         pygame.display.set_caption('IndiGame')
         self.player = Player(screen)
         self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
-        # self.enemy_list = [Enemy(), Enemy(), Enemy(), Enemy()]
         self.level_data = []
         self.right = False
         self.left = False
@@ -40,54 +39,50 @@ class Window:
                 # print(e)
                 if e.type == pygame.QUIT:
                     event = False
-            # for enemy in self.enemy_list:
-            #     enemy.draw_enemy()
-            #     enemy.enemy_moving()
-            #     self.check_go_out(enemy)
-            #     self.colliding(self.player, enemy)
             screen.fill((0, 0, 0))
             self.player.draw_player(screen)
-            self.key_events()
             for obj in self.level_data:
                 obj.draw()
                 self.colliding(obj,self.player)
-
-            # screen.blit(self.player.player_image, self.player.player)
-
+            self.key_events()
             pygame.display.flip()
 
     def colliding(self, ob1, pl):
-        # print(pl.player.bottom - ob1.shell.top)
         side = GetSide(ob1=ob1, player=pl, l=self.left, r=self.right)
         side = side.getting_side()
-        if side[1] == 1:
-            self.player.speed = 0
-            self.player.player.right = ob1.shell.left - 6
-        # if (pl.player.bottom - ob1.shell.top > 0 and pl.player.bottom - ob1.shell.top < ob1.size) or (pl.player.top - ob1.shell.bottom > 0 and pl.player.top - ob1.shell.bottom < ob1.size): # and (pl.player.top < ob1.shell.bottom):
-        #     # print(pl.player.left - ob1.shell.right)
-        #     if pl.player.right - ob1.shell.left <= 0 and pl.player.right - ob1.shell.left > -5:
-        #         if self.left is False:
-        #             self.player.speed = 0
-        #             self.player.player.right = ob1.shell.left-1
-        #
-        #     elif pl.player.left - ob1.shell.right <= 0 and pl.player.left - ob1.shell.right > -5:
-        #         # print(1)
-        #         if self.right is False:
-        #             self.player.speed = 0
-        #             self.player.player.left = ob1.shell.right+1
-        #
-        # elif (pl.player.left <= ob1.shell.right and abs(pl.player.left - ob1.shell.right) <= ob1.size) or (pl.player.right >= ob1.shell.left and pl.player.right - ob1.shell.left <= ob1.size):
-        #     if pl.player.bottom - ob1.shell.top <= 0 and pl.player.bottom - ob1.shell.top > -12:
-        #         self.player.speed_down = 0
-        #         # self.player.stopped = True
-        #         self.player.in_air = False
-        #         self.player.player.bottom = ob1.shell.top
-        #
-        #     elif pl.player.top - ob1.shell.bottom < 0 and pl.player.top - ob1.shell.bottom < 12:
-        #         # self.player.speed_down = 0
-        #         if self.player.up:
-        #             self.player.speed_down = 0
-        #             self.player.player.top = ob1.shell.bottom+1
+
+        # print(side)
+        if side is not None:
+            if side[0] == 1 and side[3] == 1:
+                pl.speed = 0
+                pl.player.left = ob1.shell.right + 1
+
+            elif side[1] == 1 and side[3] == 1:
+                print(side)
+                pl.speed = 0
+                pl.player.right = ob1.shell.left - 1
+
+
+
+            elif side[2] == 1 and pl.in_air:
+                pl.in_air = False
+                pl.speed_down = 0
+                pl.player.bottom = ob1.shell.top - 1
+
+            elif side[3] == 1 and pl.in_air:
+                pl.speed_down = 0
+                pl.player.top = ob1.shell.bottom + 1
+
+            elif side[0] == 1:
+                pl.speed = 0
+                pl.player.left = ob1.shell.right + 1
+
+            elif side[1] == 1:
+                pl.speed = 0
+                pl.player.right = ob1.shell.left - 1
+
+
+
 
 
         if ob1.shell.colliderect(pl.player):
@@ -95,7 +90,6 @@ class Window:
             pass
 
     def check_go_out(self, ob):
-        # print(self.main_rect.colliderect(ob.player))
         if self.main_rect.colliderect(ob.player) == 0:
             if ob.player.left < self.main_rect.left or ob.player.right > self.main_rect.right:
                 ob.speed = -ob.speed
