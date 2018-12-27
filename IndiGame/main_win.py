@@ -46,7 +46,6 @@ class Window:
         while self.event:
             pygame.time.delay(15)
             for e in pygame.event.get():
-                # print(e)
                 if e.type == pygame.QUIT:
                     self.event = False
             screen.fill((0, 0, 0))
@@ -61,7 +60,6 @@ class Window:
         side = GetSide(ob1=ob1, player=pl, l=self.left, r=self.right)
         side = side.getting_side()
 
-        # print(side)
         if side is not None:
             if side[0] == 1 and side[3] == 1:
                 self.restart(ob1)
@@ -70,7 +68,6 @@ class Window:
 
             elif side[1] == 1 and side[3] == 1:
                 self.restart(ob1)
-                # print(side)
                 pl.speed = 0
                 pl.player.right = ob1.shell.left - 1
 
