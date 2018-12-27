@@ -62,8 +62,6 @@ class Window:
                 pl.speed = 0
                 pl.player.right = ob1.shell.left - 1
 
-
-
             elif side[2] == 1 and pl.in_air:
                 pl.in_air = False
                 pl.speed_down = 0

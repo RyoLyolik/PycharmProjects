@@ -1,4 +1,5 @@
 import pygame
+
 size = w, h, = 720,480
 class Player:
     def __init__(self, screen):

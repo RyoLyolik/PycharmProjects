@@ -1,6 +1,3 @@
-import pygame
-
-
 class GetSide:
     def __init__(self, ob1=None, ob2=None, player=None, l=False, r=False):
         self.ob1 = ob1
@@ -12,30 +9,20 @@ class GetSide:
 
     def getting_side(self):
         ret_val = [0, 0, 0, 0]  # left right top bottom
-        # print(self.ob1,self.ob2,self.player)
         if self.ob2 is None and self.ob1 is not None and self.player is not None:
             if -32 < (self.ob1.shell.top - self.player.player.bottom) <= 0 and (
                     self.ob1.shell.right > self.player.player.left and self.ob1.shell.left < self.player.player.right):
                 ret_val[2] = 1
-                # return (0, 0, 1, 0)
 
             if 32 > (self.ob1.shell.bottom - self.player.player.top) >= 0 and (
                     self.ob1.shell.right > self.player.player.left and self.ob1.shell.left < self.player.player.right):
                 ret_val[3] = 1
-                # return (0, 0, 0, 1)
             if 32 > (self.ob1.shell.right - self.player.player.left) >= 0 and self.l and (
                     self.ob1.shell.top < self.player.player.bottom and self.ob1.shell.bottom > self.player.player.top):
                 ret_val[0] = 1
-                # return (1, 0, 0, 0)
 
             if -32 < (self.ob1.shell.left - self.player.player.right) <= 0 and self.r and (
                     self.ob1.shell.top < self.player.player.bottom and self.ob1.shell.bottom > self.player.player.top):
                 ret_val[1] = 1
-                # return (0, 1, 0, 0)
-
-            # else:
-            #     pass
-            #     ret_val = [0,0,0,0]
-            #     # return (0,0,0,0)
 
             return ret_val
