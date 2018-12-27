@@ -4,6 +4,7 @@ import math
 import sys
 from player import Player
 from blocks import  *
+from get_collide_side import GetSide
 screen = None
 size = w, h, = 720,480
 player_sprites = ['player_sprite__stay_0.png']
@@ -57,40 +58,36 @@ class Window:
 
     def colliding(self, ob1, pl):
         # print(pl.player.bottom - ob1.shell.top)
-        if (pl.player.bottom - ob1.shell.top > 0 and pl.player.bottom - ob1.shell.top < ob1.size) or (pl.player.top - ob1.shell.bottom > 0 and pl.player.top - ob1.shell.bottom < ob1.size): # and (pl.player.top < ob1.shell.bottom):
-            # print(pl.player.left - ob1.shell.right)
-            if pl.player.right - ob1.shell.left <= 0 and pl.player.right - ob1.shell.left > -5:
-                if self.left is False:
-                    self.player.speed = 0
-                    self.player.player.right = ob1.shell.left-1
-
-            elif pl.player.left - ob1.shell.right <= 0 and pl.player.left - ob1.shell.right > -5:
-                # print(1)
-                if self.right is False:
-                    self.player.speed = 0
-                    self.player.player.left = ob1.shell.right+1
-
-        elif (pl.player.left <= ob1.shell.right and abs(pl.player.left - ob1.shell.right) <= ob1.size) or (pl.player.right >= ob1.shell.left and pl.player.right - ob1.shell.left <= ob1.size):
-            if pl.player.bottom - ob1.shell.top <= 0 and pl.player.bottom - ob1.shell.top > -12:
-                self.player.speed_down = 0
-                # self.player.stopped = True
-                self.player.in_air = False
-                self.player.player.bottom = ob1.shell.top
-
-            elif pl.player.top - ob1.shell.bottom < 0 and pl.player.top - ob1.shell.bottom < 12:
-                # self.player.speed_down = 0
-                if self.player.up:
-                    self.player.speed_down = 0
-                    self.player.player.top = ob1.shell.bottom+1
-
-
-        # if (pl.player.left - ob1.shell.right <= 0 and pl.player.left - ob1.shell.right > -5) or (pl.player.right - ob1.shell.left <= 0 and pl.player.right - ob1.shell.left > -5):
-        #     if pl.player.bottom - ob1.shell.top <= 0 and pl.player.bottom - ob1.shell.top > -32:
-        #         self.player.speed_down = 0
+        side = GetSide(ob1=ob1, player=pl, l=self.left, r=self.right)
+        side = side.getting_side()
+        if side[1] == 1:
+            self.player.speed = 0
+            self.player.player.right = ob1.shell.left - 6
+        # if (pl.player.bottom - ob1.shell.top > 0 and pl.player.bottom - ob1.shell.top < ob1.size) or (pl.player.top - ob1.shell.bottom > 0 and pl.player.top - ob1.shell.bottom < ob1.size): # and (pl.player.top < ob1.shell.bottom):
+        #     # print(pl.player.left - ob1.shell.right)
+        #     if pl.player.right - ob1.shell.left <= 0 and pl.player.right - ob1.shell.left > -5:
+        #         if self.left is False:
+        #             self.player.speed = 0
+        #             self.player.player.right = ob1.shell.left-1
         #
-        #     elif pl.player.top - ob1.shell.bottom <= 0 and pl.player.top - ob1.shell.bottom > -32:
-        #         print(1)
+        #     elif pl.player.left - ob1.shell.right <= 0 and pl.player.left - ob1.shell.right > -5:
+        #         # print(1)
+        #         if self.right is False:
+        #             self.player.speed = 0
+        #             self.player.player.left = ob1.shell.right+1
+        #
+        # elif (pl.player.left <= ob1.shell.right and abs(pl.player.left - ob1.shell.right) <= ob1.size) or (pl.player.right >= ob1.shell.left and pl.player.right - ob1.shell.left <= ob1.size):
+        #     if pl.player.bottom - ob1.shell.top <= 0 and pl.player.bottom - ob1.shell.top > -12:
         #         self.player.speed_down = 0
+        #         # self.player.stopped = True
+        #         self.player.in_air = False
+        #         self.player.player.bottom = ob1.shell.top
+        #
+        #     elif pl.player.top - ob1.shell.bottom < 0 and pl.player.top - ob1.shell.bottom < 12:
+        #         # self.player.speed_down = 0
+        #         if self.player.up:
+        #             self.player.speed_down = 0
+        #             self.player.player.top = ob1.shell.bottom+1
 
 
         if ob1.shell.colliderect(pl.player):
