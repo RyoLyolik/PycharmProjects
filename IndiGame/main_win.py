@@ -8,7 +8,7 @@ from get_collide_side import GetSide
 screen = None
 size = w, h, = 720,480
 player_sprites = ['player_sprite__stay_0.png']
-blocks_type = {
+entity_type = {
     'usual': BlockUsual,
     'bad': BadBlock
 }
@@ -38,7 +38,7 @@ class Window:
         level = file.read().split('\n')
         for block in level:
             block = block.split()
-            self.level_data.append(blocks_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen))
+            self.level_data.append(entity_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen))
 
 
     def screen_update(self):
@@ -49,6 +49,11 @@ class Window:
                 if e.type == pygame.QUIT:
                     self.event = False
             screen.fill((0, 0, 0))
+            # font = pygame.font.Font(None, 25)
+            # text = font.render("Hello, Pygame!", 1, (100, 255, 100))
+            # text_x = w // 2 - text.get_width() // 2
+            # text_y = h // 2 - text.get_height() // 2
+            # screen.blit(text, (text_x, text_y))
             self.player.draw_player(screen)
             for obj in self.level_data:
                 obj.draw()
@@ -116,7 +121,7 @@ class Window:
             if pygame.key.get_pressed()[pygame.K_LALT]:
                 self.player.speed = -20
 
-            if self.player.player.left - 200 < 0:
+            if self.player.player.left - 100 < 0:
                 for entity in self.level_data:
                     entity.shell = entity.shell.move(-self.player.speed, 0)
                 self.player.speed = 0
@@ -134,7 +139,7 @@ class Window:
             if pygame.key.get_pressed()[pygame.K_LALT]:
                 self.player.speed = 20
 
-            if self.player.player.right + 200 > w:
+            if self.player.player.right + 300 > w:
                 for entity in self.level_data:
                     entity.shell = entity.shell.move(-self.player.speed, 0)
                 self.player.speed = 0

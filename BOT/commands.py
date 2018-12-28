@@ -1,10 +1,10 @@
 import random
 
-import draw
+# import draw
 import requests
 # import speech
 import json
-import vk_api
+# import vk_api
 
 def get_button(label, color, payload=""):
     return {
