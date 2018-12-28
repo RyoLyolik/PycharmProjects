@@ -12,13 +12,14 @@ entity_type = {
     'usual': BlockUsual,
     'bad': BadBlock
 }
+print(dir(pygame.pygame_dir))
 class Window:
     def __init__(self):
         global screen
-        screen = pygame.display.set_mode(size)
+        screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         pygame.display.set_caption('IndiGame')
         self.player = Player(screen)
-        self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
+        # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
         self.level_data = []
         self.right = False
         self.left = False
@@ -26,20 +27,6 @@ class Window:
         pygame.init()
 
         self.screen_update()
-
-    def restart(self, collusion_obj):
-        if collusion_obj.get_type() == 'Bad':
-            print(2)
-            self.event = False
-            self.__init__()
-
-    def load_level(self):
-        file = open('LEVELS/lvl_0.txt', 'r')
-        level = file.read().split('\n')
-        for block in level:
-            block = block.split()
-            self.level_data.append(entity_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen))
-
 
     def screen_update(self):
         self.event = True
@@ -57,26 +44,29 @@ class Window:
             self.player.draw_player(screen)
             for obj in self.level_data:
                 obj.draw()
-                self.colliding(obj,self.player)
+                self.colliding(obj, self.player)
             self.key_events()
             pygame.display.flip()
+
+    def restart(self, collusion_obj):
+        if collusion_obj.get_type() == 'Bad':
+            print(2)
+            self.event = False
+            return self.__init__()
+
+    def load_level(self):
+        file = open('LEVELS/lvl_0.txt', 'r')
+        level = file.read().split('\n')
+        for block in level:
+            block = block.split()
+            self.level_data.append(entity_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen))
 
     def colliding(self, ob1, pl):
         side = GetSide(ob1=ob1, player=pl, l=self.left, r=self.right)
         side = side.getting_side()
 
         if side is not None:
-            if side[0] == 1 and side[3] == 1:
-                self.restart(ob1)
-                pl.speed = 0
-                pl.player.left = ob1.shell.right + 1
-
-            elif side[1] == 1 and side[3] == 1:
-                self.restart(ob1)
-                pl.speed = 0
-                pl.player.right = ob1.shell.left - 1
-
-            elif side[2] == 1 and pl.in_air:
+            if side[2] == 1 and pl.in_air:
                 self.restart(ob1)
                 pl.in_air = False
                 pl.speed_down = 0
@@ -101,12 +91,6 @@ class Window:
             # print('Произошля колизия')
             pass
 
-    def check_go_out(self, ob):
-        if self.main_rect.colliderect(ob.player) == 0:
-            if ob.player.left < self.main_rect.left or ob.player.right > self.main_rect.right:
-                ob.speed = -ob.speed
-            if ob.player.top < self.main_rect.top or ob.player.bottom > self.main_rect.bottom:
-                ob.speed2 = -ob.speed2
 
     def key_events(self):
         if pygame.key.get_pressed()[pygame.K_LEFT]:
