@@ -12,7 +12,7 @@ entity_type = {
     'usual': BlockUsual,
     'bad': BadBlock
 }
-print(dir(pygame.pygame_dir))
+print(dir(pygame))
 class Window:
     def __init__(self):
         global screen
@@ -41,6 +41,7 @@ class Window:
             # text_x = w // 2 - text.get_width() // 2
             # text_y = h // 2 - text.get_height() // 2
             # screen.blit(text, (text_x, text_y))
+
             self.player.draw_player(screen)
             for obj in self.level_data:
                 obj.draw()
@@ -126,6 +127,7 @@ class Window:
             if self.player.player.right + 300 > w:
                 for entity in self.level_data:
                     entity.shell = entity.shell.move(-self.player.speed, 0)
+
                 self.player.speed = 0
 
         elif pygame.key.get_pressed()[pygame.K_SPACE] and self.player.in_air is False: # TODO
