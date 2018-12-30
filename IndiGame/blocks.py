@@ -13,8 +13,16 @@ class BlockUsual:
         if w-self.shell.size[0]-21<self.shell.left or h-self.shell.size[1]-21<self.shell.top:
             self.shell = pygame.draw.rect(self.screen, self.color, (
             self.shell.left, self.shell.top, self.size, self.size), 0)
-        else:
+        elif w-self.shell.size[0]-21>self.shell.left or h-self.shell.size[1]-21>self.shell.top:
             self.shell = pygame.draw.rect(self.screen, self.color, (self.shell.right-self.size, self.shell.bottom-self.size, self.size,self.size), 0)
+
+        # elif w-self.shell.size[0]-21<self.shell.left and h-self.shell.size[1]-21>self.shell.top:
+        #     self.shell = pygame.draw.rect(self.screen, self.color, (
+        #         self.shell.left, self.shell.bottom-self.size, self.size,self.size), 0)
+        #
+        # elif w-self.shell.size[0]-21>self.shell.left and h-self.shell.size[1]-21<self.shell.top:
+        #     self.shell = pygame.draw.rect(self.screen, self.color,
+        #                                   (self.shell.right - self.size, self.shell.top, self.size, self.size), 0)
 
 
     def get_type(self):

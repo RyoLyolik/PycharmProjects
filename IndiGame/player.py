@@ -25,9 +25,6 @@ class Player:
 
     def draw_player(self, screen):
         self.player = pygame.draw.rect(screen, (150,100,70), (self.player.left, self.player.top, self.player_size, self.player_size), 0)
-        self.pos_x += self.speed
-        if self.in_air:
-            self.pos_y += self.speed_down
         self.move([self.speed,self.speed_down])
         self.gravity()
 
