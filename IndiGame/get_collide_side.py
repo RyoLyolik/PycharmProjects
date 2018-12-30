@@ -26,3 +26,21 @@ class GetSide:
                 ret_val[1] = 1
 
             return ret_val
+
+        if self.ob1 is not None and self.ob2 is not None:
+            if -32 <= (self.ob1.shell.top - self.ob2.shell.bottom) <= 0 and (
+                    self.ob1.shell.right > self.ob2.shell.left and self.ob1.shell.left < self.ob2.shell.right):
+                ret_val[2] = 1
+
+            if 32 >= (self.ob1.shell.bottom - self.ob2.shell.top) >= 0 and (
+                    self.ob1.shell.right > self.ob2.shell.left and self.ob1.shell.left < self.ob2.shell.right):
+                ret_val[3] = 1
+            if 32 >= (self.ob1.shell.right - self.ob2.shell.left) >= 0 and self.l and (
+                    self.ob1.shell.top < self.ob2.shell.bottom and self.ob1.shell.bottom > self.ob2.shell.top):
+                ret_val[0] = 1
+
+            if -32 <= (self.ob1.shell.left - self.ob2.shell.right) <= 0 and self.r and (
+                    self.ob1.shell.top < self.ob2.shell.bottom and self.ob1.shell.bottom > self.ob2.shell.top):
+                ret_val[1] = 1
+
+            return ret_val
