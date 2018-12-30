@@ -6,24 +6,14 @@ class BlockUsual:
         self.screen = screen
         self.size = size
         self.color = (255,255,255)
+        self.now_pos = [pos_x, pos_y]
         self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size), 0)
 
     def draw(self):
-        # print(self.shell)
-        if w-self.shell.size[0]-21<self.shell.left or h-self.shell.size[1]-21<self.shell.top:
-            self.shell = pygame.draw.rect(self.screen, self.color, (
-            self.shell.left, self.shell.top, self.size, self.size), 0)
-        elif w-self.shell.size[0]-21>self.shell.left or h-self.shell.size[1]-21>self.shell.top:
-            self.shell = pygame.draw.rect(self.screen, self.color, (self.shell.right-self.size, self.shell.bottom-self.size, self.size,self.size), 0)
-
-        # elif w-self.shell.size[0]-21<self.shell.left and h-self.shell.size[1]-21>self.shell.top:
-        #     self.shell = pygame.draw.rect(self.screen, self.color, (
-        #         self.shell.left, self.shell.bottom-self.size, self.size,self.size), 0)
-        #
-        # elif w-self.shell.size[0]-21>self.shell.left and h-self.shell.size[1]-21<self.shell.top:
-        #     self.shell = pygame.draw.rect(self.screen, self.color,
-        #                                   (self.shell.right - self.size, self.shell.top, self.size, self.size), 0)
-
+        pass
+        print(self.shell.left)
+        self.shell = pygame.draw.rect(self.screen, self.color, (
+            self.now_pos[0], self.now_pos[1], self.size, self.size), 0)
 
     def get_type(self):
         return 'Usual'

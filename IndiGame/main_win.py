@@ -12,7 +12,7 @@ entity_type = {
     'usual': BlockUsual,
     'bad': BadBlock
 }
-clock = pygame.time.Clock();
+clock = pygame.time.Clock()
 print(dir(pygame))
 
 class Window:
@@ -43,14 +43,13 @@ class Window:
             for obj in self.level_data:
                 obj.draw()
                 self.colliding(obj, self.player)
-            self.key_events()
 
+            self.key_events()
             self.player.pos_x += self.player.speed
-            self.player.pos_y += self.player.speed_down
             font = pygame.font.Font(None, 25)
-            text = font.render('X: ' + str(self.player.pos_x)+ ' Y: ' +str(self.player.pos_y), 1, (255, 55, 100))
-            text_x = w // 2 - text.get_width() // 2
-            text_y = h // 2 - text.get_height() // 2
+            text = font.render('X: ' + str(self.player.pos_x), 1, (255, 55, 100))
+            text_x = w - text.get_width() - 10
+            text_y = 10
             screen.blit(text, (text_x, text_y))
 
             pygame.display.flip()
@@ -75,13 +74,11 @@ class Window:
             if side[2] == 1 and pl.in_air:
                 self.restart(ob1)
                 pl.in_air = False
-                pl.pos_y -= pl.speed_down
                 pl.speed_down = 0
                 pl.player.bottom = ob1.shell.top - 1
 
             elif side[3] == 1 and pl.in_air:
                 self.restart(ob1)
-                pl.pos_y -= pl.speed_down
                 pl.speed_down = 0
                 pl.player.top = ob1.shell.bottom + 1
 
@@ -110,15 +107,14 @@ class Window:
                 for entity in self.level_data:
                     # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
                     entity.shell = entity.shell.move(0, -self.player.speed_down)
-                self.player.pos_y -= self.player.speed_down
+                    entity.now_pos[1] -= self.player.speed_down
         if self.player.player.bottom + 120 > h and self.player.speed_down > 0:
             # if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down > 0:
             self.player.player.top = self.player.player.top - self.player.speed_down
             for entity in self.level_data:
                 # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
                 entity.shell = entity.shell.move(0, -self.player.speed_down)
-
-            self.player.pos_y -= self.player.speed_down
+                entity.now_pos[1] -= self.player.speed_down
 
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             self.player.speed = -5
@@ -135,6 +131,7 @@ class Window:
             if self.player.player.left - 100 < 0:
                 for entity in self.level_data:
                     entity.shell = entity.shell.move(-self.player.speed, 0)
+                    entity.now_pos[0] -= self.player.speed
                 self.player.pos_x += self.player.speed
                 self.player.speed = 0
 
@@ -154,6 +151,7 @@ class Window:
             if self.player.player.right + 300 > w:
                 for entity in self.level_data:
                     entity.shell = entity.shell.move(-self.player.speed, 0)
+                    entity.now_pos[0] -= self.player.speed
                 self.player.pos_x += self.player.speed
                 self.player.speed = 0
 
