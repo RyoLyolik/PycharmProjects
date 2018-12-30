@@ -9,8 +9,8 @@ class BlockUsual:
         self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size), 0)
 
     def draw(self):
-        print(self.shell)
-        if 720-self.shell.size[0]-21<self.shell.left:
+        # print(self.shell)
+        if w-self.shell.size[0]-21<self.shell.left or h-self.shell.size[1]-21<self.shell.top:
             self.shell = pygame.draw.rect(self.screen, self.color, (
             self.shell.left, self.shell.top, self.size, self.size), 0)
         else:

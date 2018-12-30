@@ -36,11 +36,11 @@ class Window:
                 if e.type == pygame.QUIT:
                     self.event = False
             screen.fill((0, 0, 0))
-            # font = pygame.font.Font(None, 25)
-            # text = font.render("Hello, Pygame!", 1, (100, 255, 100))
-            # text_x = w // 2 - text.get_width() // 2
-            # text_y = h // 2 - text.get_height() // 2
-            # screen.blit(text, (text_x, text_y))
+            font = pygame.font.Font(None, 25)
+            text = font.render(str(self.player.pos_x)+ ' ' +str(self.player.pos_y), 1, (100, 255, 100))
+            text_x = w // 2 - text.get_width() // 2
+            text_y = h // 2 - text.get_height() // 2
+            screen.blit(text, (text_x, text_y))
 
             self.player.draw_player(screen)
             for obj in self.level_data:
@@ -94,6 +94,29 @@ class Window:
 
 
     def key_events(self):
+        if self.player.player.top - 120 < 0 and self.player.in_air:
+            if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down < 0:
+                self.player.player.top = self.player.player.top - self.player.speed_down
+                for entity in self.level_data:
+                    # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
+                    entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
+
+        if self.player.player.bottom + 120 > h and self.player.speed_down > 0:
+            print(1)
+            # if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down > 0:
+            self.player.player.top = self.player.player.top - self.player.speed_down
+            for entity in self.level_data:
+                # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
+                entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
+
+
+
+            else:
+                pass
+
+        else:
+            self.player.gravity_force = 1
+
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             self.player.speed = -5
             self.left = True
