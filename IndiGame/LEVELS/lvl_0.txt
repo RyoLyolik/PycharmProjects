@@ -7,3 +7,4 @@
 500 210 64 _ usual_entity
 300 -32 64 _ usual
 600 0 64 _ usual
+1 1 1 _ usual

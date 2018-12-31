@@ -26,9 +26,9 @@ class Window:
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         pygame.display.set_caption('IndiGame')
         self.player = Player(screen)
-        self.inv_data = []
+        self.inv_data = [UsualSword((1,1), False, screen)]
         # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
-        self.level_data = [[UsualSword((1,1), False)]]
+        self.level_data = []
         self.right = False
         self.left = False
         self.invsee = False
@@ -40,21 +40,9 @@ class Window:
     def screen_update(self):
         self.event = True
         check = pygame.event.Event(3, {'key': 101, 'mod': 0, 'scancode': 18})
+
         while self.event:
-            clock.tick(67) # 67 is optimal
-            for e in pygame.event.get():
-                if e.type == pygame.QUIT:
-                    self.event = False
-                    quit(0)
-
-                if e.type == pygame.MOUSEBUTTONDOWN:
-                    if self.invsee:
-                        self.inv.get_cell(pygame.mouse.get_pos(), screen)
-
-                if e == check:
-                    self.invsee = not self.invsee
             screen.fill((0, 0, 0))
-
             self.player.draw_player(screen)
             for obj in self.level_data:
                 if obj.shell.right - 5 > 0 and obj.shell.left + 5 < w:
@@ -78,13 +66,34 @@ class Window:
 
             self.key_events()
             self.player.pos_x += self.player.speed
+            self.player.pos_x = self.player.player.left - self.level_data[-1].shell.left+1
             font = pygame.font.Font(None, 25)
             text = font.render('X: ' + str(self.player.pos_x)+'\n'+'FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
             text_x = w - text.get_width() - 10
             text_y = 10
             screen.blit(text, (text_x, text_y))
+            clock.tick(67) # 67 is optimal
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    self.event = False
+                    quit(0)
+
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if self.invsee:
+                        self.inv.get_cell(pygame.mouse.get_pos(), screen)
+
+
+
+                if e == check:
+                    self.invsee = not self.invsee
+
+
+
             if self.invsee:
                 self.inv.render(screen)
+                for inv_obj in self.inv_data:
+                    inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left+25-inv_obj.size/2,
+                                  inv_obj.place[1] * self.inv.cell_size + self.inv.top+25-inv_obj.size/2), screen)
             pygame.display.flip()
 
     def restart(self, collusion_obj):

@@ -2,8 +2,8 @@ import pygame
 
 class Invent:
     colors = {
-        1: (170, 100, 75),
-        -1: (255, 255, 255)
+        1: (118,81,77),
+        -1: (200,100,100)
     }
 
     def __init__(self, w, h):
@@ -59,18 +59,3 @@ class Invent:
                         self.cell_size - 2), 1)
     def get_last_cell(self):
         return self.last_cell
-
-
-# b = Board(8, 5)
-# run = True
-# screen = pygame.display.set_mode((720, 480))
-# b.render(screen)
-# pygame.display.flip()
-# while run:
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             run = False
-#
-#         if event.type == pygame.MOUSEBUTTONDOWN:
-#             b.get_cell(pygame.mouse.get_pos(), screen)
-#     pygame.display.flip()
