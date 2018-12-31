@@ -34,10 +34,10 @@ class Player:
     def gravity(self):
         if self.player.bottom < h - 40 and self.stopped is False:
             self.in_air = True
-            if self.speed_down < 24:
+            if self.speed_down < 12:
                 self.speed_down += self.gravity_force
             else:
-                self.speed_down = 25
+                self.speed_down = 13
             if self.speed_down < 0:
                 self.up = True
             else:

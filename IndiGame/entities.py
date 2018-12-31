@@ -10,6 +10,7 @@ class UsualEntity:
         self.start_pos = [pos_x, pos_y]
         self.now_pos = [pos_x, pos_y]
         self.gravity_force = 1
+        self.speed = 1
         self.stopped = False
         self.in_air = True
         self.up = False
@@ -38,7 +39,6 @@ class UsualEntity:
             self.in_air = False
             self.speed_down = 0
             self.stopped = True
-            self.shell.bottom = h - 41
 
         self.now_pos[1] += self.speed_down
 

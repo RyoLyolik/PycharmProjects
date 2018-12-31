@@ -1,20 +1,19 @@
-import random
+data = open('prices.txt', mode='r').read()
+all = 0
+if data != '':
+    data = data.split('\n')
+    for product in data:
+        product = product.split()
+        all += float(product[1]) * float(product[-1])
 
-def make_list():
-    l= []
-    for i in range(1000):
-        l.append(random.choice(range(2)))
+    if len(str(all).split('.')[-1]) < 2:
+        all = str(all) + '0'
 
-    return l
+    elif len(str(all).split('.')) == 1:
+        all = str(all) + '.00'
 
-find_middle = []
-for i in range(100):
-    cnt = 0
-    li = make_list()
-    for j in li:
-        if j == 0:
-            cnt +=1
 
-    find_middle.append(cnt/1000)
+    print(all)
 
-print(sum(find_middle)/100)
+else:
+    print('0.00')

@@ -1,4 +1,9 @@
 500 250 64 _ usual
+500 200 64 _ usual
+500 150 64 _ usual
+500 300 64 _ usual
 0 450 1000 _ usual
 -1000 800 10000 MainPlatform bad
-0 320 64 _ usual_entity
+500 210 64 _ usual_entity
+300 -32 64 _ usual
+600 0 64 _ usual

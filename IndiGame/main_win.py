@@ -6,6 +6,8 @@ from player import Player
 from blocks import  *
 from get_collide_side import GetSide
 from entities import *
+from inventory import *
+from inventory_objcets import *
 screen = None
 size = w, h, = 720,480
 player_sprites = ['player_sprite__stay_0.png']
@@ -20,13 +22,16 @@ print(dir(pygame))
 class Window:
     def __init__(self):
         global screen
+        self.inv = Invent(8,5)
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         pygame.display.set_caption('IndiGame')
         self.player = Player(screen)
+        self.inv_data = []
         # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
-        self.level_data = []
+        self.level_data = [[UsualSword((1,1), False)]]
         self.right = False
         self.left = False
+        self.invsee = False
         self.load_level()
         pygame.init()
 
@@ -34,13 +39,20 @@ class Window:
 
     def screen_update(self):
         self.event = True
-        all_entities = []
+        check = pygame.event.Event(3, {'key': 101, 'mod': 0, 'scancode': 18})
         while self.event:
             clock.tick(67) # 67 is optimal
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.event = False
                     quit(0)
+
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if self.invsee:
+                        self.inv.get_cell(pygame.mouse.get_pos(), screen)
+
+                if e == check:
+                    self.invsee = not self.invsee
             screen.fill((0, 0, 0))
 
             self.player.draw_player(screen)
@@ -49,36 +61,30 @@ class Window:
                     obj.draw()
                     if obj.get_type() == 'Usual_Entity':
                         if obj.shell.left - self.player.player.left < -63:
-                            obj.now_pos[0]+= 1
+                            obj.now_pos[0]+= obj.speed
                             self.right = True
                             self.left = False
                         elif obj.shell.left - self.player.player.left > 63:
-                            obj.now_pos[0] -= 1
+                            obj.now_pos[0] -= obj.speed
                             self.left = True
                             self.right = False
                     self.colliding(obj, self.player)
-                if 'Entity' in obj.get_type():
-                    all_entities.append(obj)
-
-            for entity in all_entities:
-                for obj in self.level_data:
-                    if not 'Entity' in obj.get_type():
-                        self.entity_colliding(obj, entity)
-
-                # print(obj.add)
-
+                    if 'Entity' in obj.get_type():
+                        for obj_ in self.level_data:
+                                self.entity_colliding(obj_, obj)
                 if obj.addit == 'MainPlatform':
                     self.colliding(obj, self.player)
                     obj.draw()
+
             self.key_events()
             self.player.pos_x += self.player.speed
             font = pygame.font.Font(None, 25)
-            # fps = font.render(str(int(clock.get_fps())), True, pygame.Color('green'))
             text = font.render('X: ' + str(self.player.pos_x)+'\n'+'FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
             text_x = w - text.get_width() - 10
             text_y = 10
             screen.blit(text, (text_x, text_y))
-
+            if self.invsee:
+                self.inv.render(screen)
             pygame.display.flip()
 
     def restart(self, collusion_obj):
@@ -129,34 +135,38 @@ class Window:
     def entity_colliding(self,ob1,ob2):
         side = GetSide(ob1=ob1, ob2=ob2, l=ob2.left, r=ob2.right)
         side = side.getting_side()
-        print(ob2.shell.left, ob2.shell.top)
         if side is not None:
             if side[2] == 1:
-                self.restart(ob1)
                 ob2.in_air = False
+                ob2.stopped = True
                 ob2.speed_down = 0
-                ob2.shell.bottom = ob1.shell.top - 1
+                ob2.shell.bottom = ob1.shell.top-100
 
             elif side[3] == 1:
-                print(1)
-                self.restart(ob1)
+                ob2.in_air = False
                 ob2.speed_down = 0
-                ob2.shell.top = ob1.shell.bottom + 100
+                ob2.shell.top = ob1.shell.bottom+1
+                pass
 
             elif side[0] == 1:
-                self.restart(ob1)
                 ob2.pos_x -= ob2.speed
                 ob2.speed = 0
                 ob2.shell.left = ob1.shell.right + 1
 
             elif side[1] == 1:
-                self.restart(ob1)
                 ob2.pos_x -= ob2.speed
                 ob2.speed = 0
                 ob2.shell.right = ob1.shell.left - 1
 
+            if side == [0, 0, 0, 0]:
+                ob2.stopped = False
+                ob2.in_air = True
+
+        # if side is None or side == [0,0,0,0]:
+        #     ob2.in_air = True
+
         if ob1.shell.colliderect(ob2.shell):
-            # ob2.shell.bottom = ob1.shell.bottom - 2*ob2.shell.size[1]
+            ob2.shell.bottom = ob1.shell.bottom + 50
             # print('Произошля колизия')
             pass
 
@@ -222,6 +232,8 @@ class Window:
 
         else:
             self.player.speed = 0
+
+
 
 if __name__ == '__main__':
     win = Window()
