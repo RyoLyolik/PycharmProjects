@@ -66,12 +66,20 @@ class Window:
 
             self.key_events()
             self.player.pos_x += self.player.speed
-            self.player.pos_x = self.player.player.left - self.level_data[-1].shell.left+1
+            self.player.pos_x = self.player.player.left - self.level_data[-1].shell.left
+            self.player.pos_y = self.level_data[-1].shell.top - self.player.player.top+385
+
             font = pygame.font.Font(None, 25)
-            text = font.render('X: ' + str(self.player.pos_x)+'\n'+'FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
-            text_x = w - text.get_width() - 10
-            text_y = 10
-            screen.blit(text, (text_x, text_y))
+
+            text_fps = font.render('FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
+            text_fps_x = w - text_fps.get_width() - 10
+            text_fps_y = 10
+            screen.blit(text_fps, (text_fps_x, text_fps_y))
+
+            text_xy = font.render('X: ' + str(self.player.pos_x) + '   Y: ' + str(self.player.pos_y), 1, (255, 55, 100))
+            text_xy_x = 10
+            text_xy_y = 10
+            screen.blit(text_xy, (text_xy_x, text_xy_y))
             clock.tick(67) # 67 is optimal
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -138,7 +146,7 @@ class Window:
 
         if ob1.shell.colliderect(pl.player):
             pl.player.bottom = ob1.shell.bottom - 2*pl.player.size[1]
-            # print('Произошля колизия')
+            print('Произошля колизия')
             pass
 
     def entity_colliding(self,ob1,ob2):
