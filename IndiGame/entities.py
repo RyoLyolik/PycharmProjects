@@ -22,25 +22,14 @@ class UsualEntity:
     def draw(self):
         self.shell = pygame.draw.rect(self.screen, self.color, (
             self.now_pos[0], self.now_pos[1], self.size, self.size-0.5*self.size), 0)
-        self.gravity()
 
     def gravity(self):
-        if self.stopped is False:
-            self.in_air = True
-            if self.speed_down < 24:
-                self.speed_down += self.gravity_force
-            else:
-                self.speed_down = 25
-            if self.speed_down < 0:
-                self.up = True
-            else:
-                self.up = False
+        if self.speed_down > 12:
+            self.speed_down += self.gravity_force
         else:
-            self.in_air = False
-            self.speed_down = 0
-            self.stopped = True
-
+            self.speed_down = 13
         self.now_pos[1] += self.speed_down
+
 
     def get_type(self):
         return 'Usual_Entity'

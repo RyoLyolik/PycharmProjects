@@ -32,6 +32,7 @@ class Window:
         self.right = False
         self.left = False
         self.invsee = False
+        self.entity_gravity = True
         self.load_level()
         pygame.init()
 
@@ -47,27 +48,32 @@ class Window:
             for obj in self.level_data:
                 if obj.shell.right - 5 > 0 and obj.shell.left + 5 < w:
                     obj.draw()
-                    if obj.get_type() == 'Usual_Entity':
+                    if 'Entity' in obj.get_type():
                         if obj.shell.left - self.player.player.left < -63:
-                            obj.now_pos[0]+= obj.speed
+                            obj.now_pos[0] += obj.speed
                             self.right = True
                             self.left = False
                         elif obj.shell.left - self.player.player.left > 63:
                             obj.now_pos[0] -= obj.speed
                             self.left = True
                             self.right = False
-                    self.colliding(obj, self.player)
-                    if 'Entity' in obj.get_type():
+
                         for obj_ in self.level_data:
-                                self.entity_colliding(obj_, obj)
+                            if not 'Entity' in obj_.get_type():
+                                if self.entity_colliding(obj_, obj) != [0,0,0,0] and self.entity_colliding(obj_, obj) is not None:
+                                    self.entity_colliding(obj_, obj)
+                                    break
+                        if self.entity_gravity is True:
+                            obj.gravity()
+                    self.colliding(obj, self.player)
                 if obj.addit == 'MainPlatform':
                     self.colliding(obj, self.player)
                     obj.draw()
 
             self.key_events()
             self.player.pos_x += self.player.speed
-            self.player.pos_x = self.player.player.left - self.level_data[-1].shell.left
-            self.player.pos_y = self.level_data[-1].shell.top - self.player.player.top+385
+            self.player.pos_x = self.player.player.left + 1 - self.level_data[-1].shell.left
+            self.player.pos_y = self.level_data[-1].shell.top - 1 - self.player.player.top + 385
 
             font = pygame.font.Font(None, 25)
 
@@ -91,11 +97,8 @@ class Window:
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
 
 
-
                 if e == check:
                     self.invsee = not self.invsee
-
-
 
             if self.invsee:
                 self.inv.render(screen)
@@ -152,32 +155,37 @@ class Window:
     def entity_colliding(self,ob1,ob2):
         side = GetSide(ob1=ob1, ob2=ob2, l=ob2.left, r=ob2.right)
         side = side.getting_side()
+        if side != [0, 0, 0, 0]:
+            print(side, ob1)
         if side is not None:
             if side[2] == 1:
                 ob2.in_air = False
-                ob2.stopped = True
                 ob2.speed_down = 0
-                ob2.shell.bottom = ob1.shell.top-100
+                ob2.shell.bottom = ob1.shell.top - 1
 
             elif side[3] == 1:
                 ob2.in_air = False
                 ob2.speed_down = 0
+                self.entity_gravity = False
                 ob2.shell.top = ob1.shell.bottom+1
-                pass
+                print('kk')
 
             elif side[0] == 1:
                 ob2.pos_x -= ob2.speed
+                print('stop pls')
                 ob2.speed = 0
                 ob2.shell.left = ob1.shell.right + 1
 
             elif side[1] == 1:
                 ob2.pos_x -= ob2.speed
+                print('stop pls')
                 ob2.speed = 0
                 ob2.shell.right = ob1.shell.left - 1
 
             if side == [0, 0, 0, 0]:
                 ob2.stopped = False
                 ob2.in_air = True
+
 
         # if side is None or side == [0,0,0,0]:
         #     ob2.in_air = True
@@ -186,6 +194,7 @@ class Window:
             ob2.shell.bottom = ob1.shell.bottom + 50
             # print('Произошля колизия')
             pass
+        return side
 
     def key_events(self):
         if self.player.player.top - 120 < 0 and self.player.in_air:
