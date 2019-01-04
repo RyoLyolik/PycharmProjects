@@ -1,30 +1,24 @@
-mkdir git_repo_3
-cd git_repo_3
-git init Git
-cd Git
-echo "4
-5">numbers.txt
-git add numbers.txt
-git commit -a -m "Commit"
-echo "
-4
-5
-6
-7">numbers.txt
-git commit -a -m "Commit 2"
-git log
-# посмотреть хэш
-git diff hash1 hash2
-git branch branch123456
-git checkout branch123456
-echo "
-1
-2
-3
-4
-5
-6"> numbers.txt
-git commit -a -m "Commit 3"
+mkdir git_lab1_lesson2
+cd git_lab1_lesson2
+git clone https://github.com/YandexLyceum/human.git
+cd human
+git branch -a
+cat human.txt
+
+git diff boots
+git diff buttons
+git diff buttons
+git diff demo
+git diff hat
+git diff master
+
+git checkout -b boots_buttons
+git merge boots
+git merge buttons
 git checkout master
-git branch
-git log --all --graph
+
+git merge hat
+git merge boots_buttons
+
+git diff demo
+git remote add github https://github.com/RyoLyolik/git_lesson_repository.git

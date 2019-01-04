@@ -35,11 +35,14 @@ class GetSide:
             if 32 >= (self.ob1.shell.bottom - self.ob2.shell.top) >= 0 and (
                     self.ob1.shell.right > self.ob2.shell.left and self.ob1.shell.left < self.ob2.shell.right):
                 ret_val[3] = 1
+
             if 32 >= (self.ob1.shell.right - self.ob2.shell.left) >= 0 and self.l and (
                     self.ob1.shell.top < self.ob2.shell.bottom and self.ob1.shell.bottom > self.ob2.shell.top):
+                print(1)
                 ret_val[0] = 1
 
             if -32 <= (self.ob1.shell.left - self.ob2.shell.right) <= 0 and self.r and (
                     self.ob1.shell.top < self.ob2.shell.bottom and self.ob1.shell.bottom > self.ob2.shell.top):
+                print(2)
                 ret_val[1] = 1
             return ret_val

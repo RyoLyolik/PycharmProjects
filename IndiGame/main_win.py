@@ -14,7 +14,8 @@ player_sprites = ['player_sprite__stay_0.png']
 entity_type = {
     'usual': BlockUsual,
     'bad': BadBlock,
-    'usual_entity': UsualEntity
+    'usual_entity': UsualEntity,
+    'bad_entity': BadEntity
 }
 clock = pygame.time.Clock()
 print(dir(pygame))
@@ -32,7 +33,7 @@ class Window:
         self.right = False
         self.left = False
         self.invsee = False
-        self.entity_gravity = True
+        # self.entity_gravity = True
         self.load_level()
         pygame.init()
 
@@ -46,25 +47,30 @@ class Window:
             screen.fill((0, 0, 0))
             self.player.draw_player(screen)
             for obj in self.level_data:
-                if obj.shell.right - 5 > 0 and obj.shell.left + 5 < w:
+                if obj.shell.right + 50 > 0 and obj.shell.left - 50 < w:
                     obj.draw()
                     if 'Entity' in obj.get_type():
                         if obj.shell.left - self.player.player.left < -63:
                             obj.now_pos[0] += obj.speed
-                            self.right = True
-                            self.left = False
+                            obj.right = True
+                            obj.left = False
                         elif obj.shell.left - self.player.player.left > 63:
                             obj.now_pos[0] -= obj.speed
-                            self.left = True
-                            self.right = False
+                            obj.left = True
+                            obj.right = False
 
                         for obj_ in self.level_data:
                             if not 'Entity' in obj_.get_type():
                                 if self.entity_colliding(obj_, obj) != [0,0,0,0] and self.entity_colliding(obj_, obj) is not None:
                                     self.entity_colliding(obj_, obj)
                                     break
-                        if self.entity_gravity is True:
+                        if obj.gravity_n is True:
                             obj.gravity()
+
+                        if obj.shell.colliderect(self.player.player) and 'Bad' in obj.get_type():
+                            self.restart(BadBlock(0, 0, 0, screen, additionally = None))
+
+
                     self.colliding(obj, self.player)
                 if obj.addit == 'MainPlatform':
                     self.colliding(obj, self.player)
@@ -147,6 +153,7 @@ class Window:
                 pl.speed = 0
                 pl.player.right = ob1.shell.left - 1
 
+
         if ob1.shell.colliderect(pl.player):
             pl.player.bottom = ob1.shell.bottom - 2*pl.player.size[1]
             print('Произошля колизия')
@@ -156,44 +163,45 @@ class Window:
         side = GetSide(ob1=ob1, ob2=ob2, l=ob2.left, r=ob2.right)
         side = side.getting_side()
         if side != [0, 0, 0, 0]:
-            print(side, ob1)
+            pass
+            # print(side, ob1)
         if side is not None:
             if side[2] == 1:
                 ob2.in_air = False
+                ob2.gravity_n = False
                 ob2.speed_down = 0
-                ob2.shell.bottom = ob1.shell.top - 1
+                ob2.now_pos[1] = ob1.shell.top - ob2.shell.size[1]
 
             elif side[3] == 1:
                 ob2.in_air = False
                 ob2.speed_down = 0
-                self.entity_gravity = False
-                ob2.shell.top = ob1.shell.bottom+1
-                print('kk')
+                # ob2.gravity_n = False
+                ob2.now_pos[1] = ob1.shell.bottom + 1
 
             elif side[0] == 1:
-                ob2.pos_x -= ob2.speed
-                print('stop pls')
+                ob2.now_pos[0] -= ob2.speed
                 ob2.speed = 0
-                ob2.shell.left = ob1.shell.right + 1
+                ob2.now_pos[0] = ob1.shell.right +1
 
             elif side[1] == 1:
-                ob2.pos_x -= ob2.speed
-                print('stop pls')
+                ob2.now_pos[0] -= ob2.speed
                 ob2.speed = 0
-                ob2.shell.right = ob1.shell.left - 1
+                ob2.now_pos[0] = ob1.shell.left - 2 - ob2.shell.size[0]
 
             if side == [0, 0, 0, 0]:
                 ob2.stopped = False
                 ob2.in_air = True
+                ob2.gravity_n = True
 
 
-        # if side is None or side == [0,0,0,0]:
-        #     ob2.in_air = True
 
+            if side[0] == 0 or side[1] == 0:
+                ob2.speed = 1
+        if side is None or side[2] == 0 or side[3] == 0:
+            ob2.in_air = True
         if ob1.shell.colliderect(ob2.shell):
-            ob2.shell.bottom = ob1.shell.bottom + 50
-            # print('Произошля колизия')
-            pass
+            # ob2.shell.bottom = ob1.shell.bottom + 50
+            print('Произошля колизия')
         return side
 
     def key_events(self):

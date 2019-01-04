@@ -17,6 +17,7 @@ class UsualEntity:
         self.left = False
         self.right = False
         self.speed_down = 0
+        self.gravity_n = True
         self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size-0.5*size), 0)
 
     def draw(self):
@@ -33,3 +34,18 @@ class UsualEntity:
 
     def get_type(self):
         return 'Usual_Entity'
+
+
+class BadEntity(UsualEntity):
+    def __init__(self, pos_x, pos_y, size, screen, additionally = 0):
+        super().__init__(pos_x, pos_y, size, screen, additionally = 0)
+        self.color = (255,69,0)
+
+    def draw(self):
+        super().draw()
+
+    def gravity(self):
+        super().gravity()
+
+    def get_type(self):
+        return 'Bad_Entity'
