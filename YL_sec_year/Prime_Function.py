@@ -1,5 +1,4 @@
-x = [0,1,2,3,4]
+import sys
 
-ind = 356
-
-print(ind//(2**2))
+x = [i for i in sys.stdin]
+print(len(x))

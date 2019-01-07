@@ -1,3 +1,4 @@
+# Предыдущая
 mkdir git_lab1_lesson2
 cd git_lab1_lesson2
 git clone https://github.com/YandexLyceum/human.git
@@ -17,8 +18,7 @@ git merge boots
 git merge buttons
 git checkout master
 
+# Данная
 git merge hat
 git merge boots_buttons
-
 git diff demo
-git remote add github https://github.com/RyoLyolik/git_lesson_repository.git

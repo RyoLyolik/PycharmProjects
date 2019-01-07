@@ -16,6 +16,7 @@ def all():
     commands = commands.split()
     cnt = 0
     orig_id = 0
+    all = False
     while True:
         try:
             messages = vk.method('messages.getConversations', {'out': 0, 'time_offset': 60, 'count': 100, 'filter': "unread"})
@@ -37,19 +38,24 @@ def all():
                         cnt = 0
 
                     if cnt >= 2:
-                        cnt = 0
                         vk.method('messages.send', {'peer_id': id, 'message': 'Казино все'})
+                        all = True
 
                     elif mult < 1:
                         cnt += 1
                         vk.method('messages.send', {'peer_id': id, 'message': 'Казино ' + str(random.choice(range(1, 100)))})
+                        all = False
 
                     elif mult >= 1:
                         cnt = 0
                         vk.method('messages.send', {'peer_id': id, 'message': 'Казино ' + str(random.choice(range(1, 100)))})
+                        all = False
 
 
                     print(mult, cnt)
+                    if mult == 0 and all:
+                        print('ну ты и лох')
+                        quit(0)
                     time.sleep(3)
 
                 time.sleep(3)
