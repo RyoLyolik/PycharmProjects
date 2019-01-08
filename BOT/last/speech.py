@@ -80,7 +80,7 @@ tts = gTTS(text=text, lang='ru')
 name = "C:/Users/bicho/Desktop/SMERT.mp3"
 tts.save(name)
 # def speech(text, id, lang):
-#     vk = vk_api.VkApi(login='89605187783', password='1524360798')
+#     vk = vk_api.VkApi(login='89605187783', password='No')
 #     vk._auth_token()
 #     if len(text.split()) <= 500:
 #         tts = gTTS(text=text, lang=lang)
