@@ -1,3 +1,3 @@
-400 400 64 _ usual
 -1000 450 10000 _ usual
-400 210 64 _ usual_entity
+-3000 750 10000 MainPlatform bad
+540 445 64 _ usual

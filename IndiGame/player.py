@@ -1,6 +1,6 @@
 import pygame
 
-size = w, h, = 720,480
+size = w, h, = 720, 480
 class Player:
     def __init__(self, screen):
 
@@ -24,15 +24,16 @@ class Player:
 
 
     def draw_player(self, screen):
-        self.player = pygame.draw.rect(screen, (150,100,70), (self.player.left, self.player.top, self.player_size, self.player_size), 0)
-        self.move([self.speed,self.speed_down])
+        self.player = pygame.draw.rect(screen, (150, 100, 70), (
+            self.player.left, self.player.top, self.player_size, self.player_size), 0)
+        self.move([self.speed, self.speed_down])
         self.gravity()
 
     def move(self, speed):
         self.player = self.player.move(speed)
 
     def gravity(self):
-        if self.player.bottom < h - 40 and self.stopped is False:
+        if self.stopped is False:
             self.in_air = True
             if self.speed_down < 12:
                 self.speed_down += self.gravity_force
@@ -47,7 +48,6 @@ class Player:
             self.in_air = False
             self.speed_down = 0
             self.stopped = True
-            self.player.bottom = h - 41
 
 
     def limit_reached(self):
