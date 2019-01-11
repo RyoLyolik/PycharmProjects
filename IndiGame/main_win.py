@@ -83,8 +83,8 @@ class Window:
                     obj.draw()
 
             self.key_events()
-            self.player.pos_x = self.player.player.left - self.level_data[0].now_pos[0] - 190
-            self.player.pos_y = self.level_data[0].now_pos[1] - self.player.player.top + 447
+            self.player.pos_x = self.player.player.left - self.level_data[-1].now_pos[0]
+            self.player.pos_y = self.level_data[-1].now_pos[1] - self.player.player.top + 448
 
             font = pygame.font.Font(None, 25)
 
@@ -144,24 +144,24 @@ class Window:
                 self.restart(ob1)
                 pl.in_air = False
                 pl.speed_down = 0
-                pl.player.bottom = ob1.shell.top - 1
+                pl.player.bottom = ob1.shell.top - 0  # 1 ?
 
             elif side[3] == 1 and pl.in_air:
                 self.restart(ob1)
                 pl.speed_down = 0
-                pl.player.top = ob1.shell.bottom + 1
+                pl.player.top = ob1.shell.bottom + 0  # 1 ?
 
             elif side[0] == 1:
                 self.restart(ob1)
                 pl.pos_x -= pl.speed
                 pl.speed = 0
-                pl.player.left = ob1.shell.right + 1
+                pl.player.left = ob1.shell.right + 0  # 1 ?
 
             elif side[1] == 1:
                 self.restart(ob1)
                 pl.pos_x -= pl.speed
                 pl.speed = 0
-                pl.player.right = ob1.shell.left - 1
+                pl.player.right = ob1.shell.left - 0  # 1 ?
 
 
         if ob1.shell.colliderect(pl.player):

@@ -6,7 +6,7 @@ class Player:
 
         self.player_size = 64
         self.speed = 0
-        self.pos_x = 190
+        self.pos_x = 128
         self.pos_y = 60
 
 
