@@ -8,6 +8,16 @@ from get_collide_side import GetSide
 from entities import *
 from inventory import *
 from inventory_objcets import *
+
+
+def round_to(num, rounded_to=3):
+    if int(num) == num:
+        return str(int(num)) + '.' + '0' * rounded_to
+    elif int(num) != num:
+        return str(round(num, rounded_to))
+    else:
+        raise ValueError
+
 screen = None
 size = w, h, = 720,480
 player_sprites = ['player_sprite__stay_0.png']
@@ -71,13 +81,10 @@ class Window:
                             self.restart(BadBlock(0, 0, 0, screen, additionally=None))
                     self.colliding(obj, self.player)
                     obj.draw()
-                if obj.addit == 'MainPlatform':
-                    self.colliding(obj, self.player)
-                    obj.draw()
 
             self.key_events()
-            self.player.pos_x = self.player.player.left + 1 - self.level_data[-1].shell.left
-            self.player.pos_y = self.level_data[0].shell.top - 1 - self.player.player.top - 64
+            self.player.pos_x = self.player.player.left - self.level_data[0].now_pos[0] - 190
+            self.player.pos_y = self.level_data[0].now_pos[1] - self.player.player.top + 447
 
             font = pygame.font.Font(None, 25)
 
@@ -86,11 +93,14 @@ class Window:
             text_fps_y = 10
             screen.blit(text_fps, (text_fps_x, text_fps_y))
 
-            text_xy = font.render('X: ' + str(self.player.pos_x) + '   Y: ' + str(self.player.pos_y), 1, (255, 55, 100))
+            text_xy = font.render(
+                'X: ' + round_to(self.player.pos_x / 64, 3) + '   Y: ' +
+                round_to(self.player.pos_y / 64, 3), 1,
+                (255, 55, 100))
             text_xy_x = 10
             text_xy_y = 10
             screen.blit(text_xy, (text_xy_x, text_xy_y))
-            clock.tick(67) # 67 is optimal
+            clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.event = False
@@ -109,6 +119,8 @@ class Window:
                 for inv_obj in self.inv_data:
                     inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left+25-inv_obj.size/2,
                                   inv_obj.place[1] * self.inv.cell_size + self.inv.top+25-inv_obj.size/2), screen)
+            if self.player.pos_y < -1000:
+                return self.restart(BadBlock(0, 0, 0, screen, additionally=None))
             pygame.display.flip()
 
     def restart(self, collusion_obj):
