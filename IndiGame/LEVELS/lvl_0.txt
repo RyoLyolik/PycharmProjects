@@ -1,6 +1,6 @@
 -1000 512 10000 _ usual
+256 60 64 _ usual_entity
 384 448 64 _ usual
 384 384 64 _ usual
 384 320 64 _ usual
-384 256 64 _ usual
 0 0 1 1 CoordsBlock usual

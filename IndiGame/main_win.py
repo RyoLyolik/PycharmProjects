@@ -70,10 +70,8 @@ class Window:
                             obj.right = False
 
                         for obj_ in self.level_data:
-                            if not 'Entity' in obj_.get_type():
+                            if 'Entity' not in obj_.get_type():
                                 val = self.entity_colliding(obj_, obj)
-                                if val != [0, 0, 0, 0] and val is not None:
-                                    break
                         if obj.gravity_n is True:
                             obj.gravity()
 
@@ -181,7 +179,7 @@ class Window:
                 ob2.gravity_n = False
                 ob2.stopped = True
                 ob2.speed_down = 0
-                ob2.now_pos[1] = ob1.shell.top - ob2.shell.size[1]
+                ob2.now_pos[1] = ob1.shell.top - ob2.size[1] - 1
 
             elif side[3] == 1:
                 ob2.in_air = False

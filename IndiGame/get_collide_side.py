@@ -43,6 +43,7 @@ class GetSide:
             if -32 <= (self.ob1.now_pos[0] - self.ob2.now_pos[0]-self.ob2.size[0]) <= 0 and self.r and (
                     self.ob1.now_pos[1] < self.ob2.now_pos[1]+self.ob2.size[1] and self.ob1.now_pos[1] + self.ob1.size[1] > self.ob2.now_pos[1]):
                 ret_val[1] = 1
-            # if ret_val != [0,0,0,0] and ret_val != [0,0,1,0]:
-            #     print(ret_val)
+
+            # if self.ob1.start_pos == [-1000, 512]:
+            #     print((self.ob1.now_pos[1] - self.ob2.now_pos[1]-self.ob2.size[1], self.ob1.now_pos[1], self.ob2.now_pos[1], self.ob2.size[1]))
             return ret_val
