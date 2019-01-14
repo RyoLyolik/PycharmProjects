@@ -19,17 +19,26 @@ class UsualEntity:
         self.speed_down = 0
         self.gravity_n = True
         self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size-0.5*size), 0)
+        self.health = 20
+        self.die = False
+        self.cost = 25
 
     def draw(self):
-        self.shell = pygame.draw.rect(self.screen, self.color, (
-            self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)
+        if self.die is True:
+            self.cost = 0
+        if self.health > 0:
+            self.shell = pygame.draw.rect(self.screen, self.color, (
+                self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)
+        else:
+            self.die = True
 
     def gravity(self):
-        if self.speed_down < 12:
-            self.speed_down += self.gravity_force
-        else:
-            self.speed_down = 13
-        self.now_pos[1] += self.speed_down
+        if self.health > 0:
+            if self.speed_down < 12:
+                self.speed_down += self.gravity_force
+            else:
+                self.speed_down = 13
+            self.now_pos[1] += self.speed_down
 
 
     def get_type(self):

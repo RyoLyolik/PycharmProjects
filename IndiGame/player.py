@@ -18,9 +18,14 @@ class Player:
         self.gravity_force = 1
         self.speed_down = 0
 
+        self.money = 0
+
         self.player = pygame.draw.rect(screen, (200, 100, 150),
                                        (self.pos_x, self.pos_y, self.player_size, self.player_size), 0)
         # self.draw_player()
+        self.hand_obj_pos = [0, 0]
+        self.hand_obj = None
+        self.player_power = self.hand_obj.power if self.hand_obj is not None else 1
 
 
     def draw_player(self, screen):
@@ -28,6 +33,10 @@ class Player:
             self.player.left, self.player.top, self.player_size, self.player_size), 0)
         self.move([self.speed, self.speed_down])
         self.gravity()
+        self.actions()
+
+    def get_hand_obj(self):
+        return self.hand_obj
 
     def move(self, speed):
         self.player = self.player.move(speed)
@@ -49,6 +58,7 @@ class Player:
             self.speed_down = 0
             self.stopped = True
 
+    def actions(self):
+        self.player_power = self.hand_obj.power if self.hand_obj is not None else 1
 
-    def limit_reached(self):
-        pass
+

@@ -4,7 +4,7 @@ import math
 import sys
 from player import Player
 from blocks import *
-from get_collide_side import GetSide
+from character_interaction import *
 from entities import *
 from inventory import *
 from inventory_objcets import *
@@ -37,7 +37,14 @@ class Window:
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         pygame.display.set_caption('IndiGame')
         self.player = Player(screen)
-        self.inv_data = [UsualSword((1,1), False, screen)]
+        self.inv_data = [[Hand((0,0), True, screen),UsualSword((0,1), False, screen),Hand((0,2), False, screen),Hand((0,3), False, screen),Hand((0,4), False, screen)],
+                         [Hand((1,0), False, screen),Hand((1,1), False, screen),Hand((1,2), False, screen),Hand((1,3), False, screen),Hand((1,4), False, screen)],
+                         [Hand((2, 0), False, screen), Hand((2, 1), False, screen),Hand((2, 2), False, screen), Hand((2, 3), False, screen),Hand((2, 4), False, screen)],
+                         [Hand((3, 0), False, screen), Hand((3, 1), False, screen),Hand((3, 2), False, screen), Hand((3, 3), False, screen),Hand((3, 4), False, screen)],
+                         [Hand((4, 0), False, screen), Hand((4, 1), False, screen),Hand((4, 2), False, screen), Hand((4, 3), False, screen),Hand((4, 4), False, screen)],
+                         [Hand((5, 0), False, screen), Hand((5, 1), False, screen),Hand((5, 2), False, screen), Hand((5, 3), False, screen),Hand((5, 4), False, screen)],
+                         [Hand((6, 0), False, screen), Hand((6, 1), False, screen),Hand((6, 2), False, screen), Hand((6, 3), False, screen),Hand((6, 4), False, screen)],
+                         [Hand((7, 0), False, screen), Hand((7, 1), False, screen),Hand((7, 2), False, screen), Hand((7, 3), False, screen),Hand((7, 4), False, screen)]]
         # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
         self.level_data = []
         self.right = False
@@ -55,10 +62,12 @@ class Window:
 
         while self.event:
             screen.fill((0, 0, 0))
+            print(self.player.money)
             self.player.draw_player(screen)
             for obj in self.level_data:
                 if obj.shell.right + 200 > 0 and obj.shell.left - 200 < w:
-                    if 'Entity' in obj.get_type():
+
+                    if 'Entity' in obj.get_type() and obj.die is False:
                         # print(obj.speed_down)
                         if obj.shell.left - self.player.player.left < -63:
                             obj.now_pos[0] += obj.speed
@@ -77,7 +86,8 @@ class Window:
 
                         if obj.shell.colliderect(self.player.player) and 'Bad' in obj.get_type():
                             self.restart(BadBlock(0, 0, 0, screen, additionally=None))
-                    self.colliding(obj, self.player)
+                    if not 'Entity' in obj.get_type():
+                        self.colliding(obj, self.player)
                     obj.draw()
 
             self.key_events()
@@ -98,6 +108,11 @@ class Window:
             text_xy_x = 10
             text_xy_y = 10
             screen.blit(text_xy, (text_xy_x, text_xy_y))
+
+            text_money = self.player.money
+            money = font.render(str(text_money), 1, (255, 55, 100))
+            screen.blit(money, (360, 10))
+
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -107,6 +122,18 @@ class Window:
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if self.invsee:
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
+                    elif not self.invsee:
+                        for obj in self.level_data:
+
+                            if obj.shell.right + 200 > 0 and obj.shell.left - 200 < w:
+                                if 'Entity' in obj.get_type() and obj.die is True:
+                                    print(obj.cost, 'cost')
+                                    self.player.money += obj.cost
+                                elif 'Entity' in obj.get_type() and obj.die is False:
+                                    print(obj.cost, 'cost')
+                                    val = EntityIsNear(ob1=obj, player=self.player).getting_side()
+                                    if val != [0,0,0,0]:
+                                        obj.health -= self.player.player_power
 
 
                 if e == check:
@@ -114,9 +141,16 @@ class Window:
 
             if self.invsee:
                 self.inv.render(screen)
-                for inv_obj in self.inv_data:
-                    inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left+25-inv_obj.size/2,
-                                  inv_obj.place[1] * self.inv.cell_size + self.inv.top+25-inv_obj.size/2), screen)
+                self.player.hand_obj_pos = list(self.inv.get_last_cell())
+                print(self.player.hand_obj_pos, self.player.player_power)
+                self.player.hand_obj = self.inv_data[self.player.hand_obj_pos[0]][self.player.hand_obj_pos[1]]
+
+                for i in range(len(self.inv_data)):
+                    for j in range(len(self.inv_data[i])):
+                        inv_obj = self.inv_data[i][j]
+                        inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left+25-inv_obj.size/2,
+                                      inv_obj.place[1] * self.inv.cell_size + self.inv.top+25-inv_obj.size/2), screen)
+
             if self.player.pos_y < -1000:
                 return self.restart(BadBlock(0, 0, 0, screen, additionally=None))
             pygame.display.flip()

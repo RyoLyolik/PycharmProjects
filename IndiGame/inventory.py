@@ -13,7 +13,7 @@ class Invent:
         self.cell_size = 50
         self.left = w*self.cell_size*0.4
         self.top = h*self.cell_size*0.5
-        self.last_cell = ()
+        self.last_cell = (0,0)
 
     def set_view(self, left, top, cell_size):
         self.left = left
