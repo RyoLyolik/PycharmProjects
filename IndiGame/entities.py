@@ -6,12 +6,11 @@ class UsualEntity:
         self.screen = screen
         self.size = (size, size//2)
         self.addit = additionally
-        self.color = (100, 255, 75)
+        self.color = (100, 255, 225)
         self.start_pos = [pos_x, pos_y]
         self.now_pos = [pos_x, pos_y]
         self.gravity_force = 1
         self.speed = 1
-        self.stopped = False
         self.in_air = True
         self.up = False
         self.left = False
@@ -22,9 +21,13 @@ class UsualEntity:
         self.health = 20
         self.die = False
         self.cost = 25
+        self.paid = False
+        self.stopped = []
+        self.reload = 0
+        self.power = 0
 
     def draw(self):
-        if self.die is True:
+        if self.paid:
             self.cost = 0
         if self.health > 0:
             self.shell = pygame.draw.rect(self.screen, self.color, (
@@ -35,6 +38,7 @@ class UsualEntity:
     def gravity(self):
         if self.health > 0:
             if self.speed_down < 12:
+                self.in_air = True
                 self.speed_down += self.gravity_force
             else:
                 self.speed_down = 13
@@ -49,6 +53,7 @@ class BadEntity(UsualEntity):
     def __init__(self, pos_x, pos_y, size, screen, additionally = 0):
         super().__init__(pos_x, pos_y, size, screen, additionally=0)
         self.color = (255,69,0)
+        self.power = 15
 
     def draw(self):
         super().draw()

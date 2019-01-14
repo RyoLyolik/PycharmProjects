@@ -26,6 +26,11 @@ class Player:
         self.hand_obj_pos = [0, 0]
         self.hand_obj = None
         self.player_power = self.hand_obj.power if self.hand_obj is not None else 1
+        self.max_health = 100
+        self.health = self.max_health
+
+        self.regen_cnt = 0
+        self.regen = 1
 
 
     def draw_player(self, screen):

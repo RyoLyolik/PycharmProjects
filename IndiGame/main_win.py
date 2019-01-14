@@ -58,22 +58,29 @@ class Window:
 
     def screen_update(self):
         self.event = True
-        check = pygame.event.Event(3, {'key': 101, 'mod': 0, 'scancode': 18})
+        check = pygame.event.Event(2, {'unicode':'e','key': 101, 'mod': 0, 'scancode': 18})
+        check_2 = pygame.event.Event(2, {'unicode': '0','key': 256, 'mod': 0, 'scancode': 82})
 
         while self.event:
+            self.player.regen_cnt += 1
+            if self.player.regen_cnt > 100:
+                if self.player.health < self.player.max_health:
+                    self.player.health += self.player.regen
+                else:
+                    self.player.health = self.player.max_health
+                self.player.regen_cnt = 0
             screen.fill((0, 0, 0))
-            print(self.player.money)
             self.player.draw_player(screen)
             for obj in self.level_data:
-                if obj.shell.right + 200 > 0 and obj.shell.left - 200 < w:
-
+                if obj.now_pos[0]+ obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
                     if 'Entity' in obj.get_type() and obj.die is False:
+                        obj.reload += 1
                         # print(obj.speed_down)
-                        if obj.shell.left - self.player.player.left < -63:
+                        if obj.now_pos[0] - self.player.player.left < -63:
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
-                        elif obj.shell.left - self.player.player.left > 63:
+                        elif obj.now_pos[0] - self.player.player.left > 63:
                             obj.now_pos[0] -= obj.speed
                             obj.left = True
                             obj.right = False
@@ -81,11 +88,22 @@ class Window:
                         for obj_ in self.level_data:
                             if 'Entity' not in obj_.get_type():
                                 val = self.entity_colliding(obj_, obj)
+                                obj.stopped.append(val[2] == 1)
+
+                        for obj_ in self.level_data:
+                            if 'Entity' not in obj_.get_type():
+                                val = self.entity_colliding(obj_, obj)
+                                near_ch = EntityIsNear(ob1=obj_, ob2=obj).getting_side()
+                                if True in obj.stopped and (near_ch[0] == 1 or near_ch[1] == 1):
+                                    obj.speed_down = -16
+                                    obj.stopped = []
+
                         if obj.gravity_n is True:
                             obj.gravity()
 
-                        if obj.shell.colliderect(self.player.player) and 'Bad' in obj.get_type():
-                            self.restart(BadBlock(0, 0, 0, screen, additionally=None))
+                        if obj.shell.colliderect(self.player.player) and 'bad' in obj.get_type().lower() and obj.reload > 100:
+                            self.player.health -= obj.power
+                            obj.reload = 0
                     if not 'Entity' in obj.get_type():
                         self.colliding(obj, self.player)
                     obj.draw()
@@ -110,8 +128,13 @@ class Window:
             screen.blit(text_xy, (text_xy_x, text_xy_y))
 
             text_money = self.player.money
-            money = font.render(str(text_money), 1, (255, 55, 100))
+            money = font.render('Money: '+str(text_money), 1, (255, 55, 100))
             screen.blit(money, (360, 10))
+
+            health = self.player.health = int(self.player.health)
+
+            health_rend = font.render('Health: '+str(health), 1, (255, 55, 100))
+            screen.blit(health_rend, (360, 30))
 
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
@@ -124,25 +147,24 @@ class Window:
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
                     elif not self.invsee:
                         for obj in self.level_data:
-
-                            if obj.shell.right + 200 > 0 and obj.shell.left - 200 < w:
-                                if 'Entity' in obj.get_type() and obj.die is True:
-                                    print(obj.cost, 'cost')
-                                    self.player.money += obj.cost
-                                elif 'Entity' in obj.get_type() and obj.die is False:
-                                    print(obj.cost, 'cost')
+                            if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
+                                if 'Entity' in obj.get_type() and obj.die is False:
                                     val = EntityIsNear(ob1=obj, player=self.player).getting_side()
                                     if val != [0,0,0,0]:
                                         obj.health -= self.player.player_power
+                                        obj.draw()
 
+                                if 'Entity' in obj.get_type() and obj.paid is False and obj.die is True:
+                                    self.player.money += obj.cost
+                                    obj.paid = True
 
-                if e == check:
+                print(e)
+                if e == check or e == check_2:
                     self.invsee = not self.invsee
 
             if self.invsee:
                 self.inv.render(screen)
                 self.player.hand_obj_pos = list(self.inv.get_last_cell())
-                print(self.player.hand_obj_pos, self.player.player_power)
                 self.player.hand_obj = self.inv_data[self.player.hand_obj_pos[0]][self.player.hand_obj_pos[1]]
 
                 for i in range(len(self.inv_data)):
@@ -176,24 +198,24 @@ class Window:
                 self.restart(ob1)
                 pl.in_air = False
                 pl.speed_down = 0
-                pl.player.bottom = ob1.shell.top - 0  # 1 ?
+                pl.player.bottom = ob1.now_pos[1] - 1  # 1 ?
 
             elif side[3] == 1 and pl.in_air:
                 self.restart(ob1)
                 pl.speed_down = 0
-                pl.player.top = ob1.shell.bottom + 0  # 1 ?
+                pl.player.top = ob1.now_pos[1]+ob1.size[1] + 1  # 1 ?
 
             elif side[0] == 1:
                 self.restart(ob1)
                 pl.pos_x -= pl.speed
                 pl.speed = 0
-                pl.player.left = ob1.shell.right + 0  # 1 ?
+                pl.player.left = ob1.now_pos[0] + ob1.size[0] + 1  # 1 ?
 
             elif side[1] == 1:
                 self.restart(ob1)
                 pl.pos_x -= pl.speed
                 pl.speed = 0
-                pl.player.right = ob1.shell.left - 0  # 1 ?
+                pl.player.right = ob1.now_pos[0] - 1  # 1 ?
 
 
         if ob1.shell.colliderect(pl.player):
@@ -211,24 +233,23 @@ class Window:
             if side[2] == 1:
                 ob2.in_air = False
                 ob2.gravity_n = False
-                ob2.stopped = True
                 ob2.speed_down = 0
-                ob2.now_pos[1] = ob1.shell.top - ob2.size[1] - 1
+                ob2.now_pos[1] = ob1.now_pos[1] - ob2.size[1] - 1
 
             elif side[3] == 1:
                 ob2.in_air = False
                 ob2.speed_down = 0
-                ob2.now_pos[1] = ob1.shell.bottom + 1
+                ob2.now_pos[1] = ob1.now_pos[1]+ob1.size[1] + 1
 
             elif side[0] == 1:
                 ob2.now_pos[0] -= ob2.speed
                 ob2.speed = 0
-                ob2.now_pos[0] = ob1.shell.right + 1
+                ob2.now_pos[0] = ob1.now_pos[0]+ob1.size[0] + 1
 
             elif side[1] == 1:
                 ob2.now_pos[0] -= ob2.speed
                 ob2.speed = 0
-                ob2.now_pos[0] = ob1.shell.left - 2 - 64
+                ob2.now_pos[0] = ob1.now_pos[0] - 2 - 64
 
             if side == [0, 0, 0, 0]:
                 # ob2.stopped = False
@@ -253,56 +274,51 @@ class Window:
                 self.player.player.top = self.player.player.top - self.player.speed_down
                 for entity in self.level_data:
                     # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
-                    entity.shell = entity.shell.move(0, -self.player.speed_down)
                     entity.now_pos[1] -= self.player.speed_down
         if self.player.player.bottom + 120 > h and self.player.speed_down > 0:
             # if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down > 0:
             self.player.player.top = self.player.player.top - self.player.speed_down
             for entity in self.level_data:
                 # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
-                entity.shell = entity.shell.move(0, -self.player.speed_down)
                 entity.now_pos[1] -= self.player.speed_down
 
-        if pygame.key.get_pressed()[pygame.K_LEFT]:
+
+        if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_a]:
             self.player.speed = -5
             self.left = True
             self.right = False
-            if pygame.key.get_pressed()[pygame.K_SPACE] and self.player.in_air is False:  # TODO
+            if (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP] or pygame.key.get_pressed()[pygame.K_w]) and self.player.in_air is False:  # TODO
                 self.player.in_air = True
                 self.player.stopped = False
                 self.player.speed_down = -20
 
-            if pygame.key.get_pressed()[pygame.K_LALT]:
+            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LALT]:
                 self.player.speed = -20
 
             if self.player.player.left - 100 < 0:
                 for entity in self.level_data:
-                    entity.shell = entity.shell.move(-self.player.speed, 0)
                     entity.now_pos[0] -= self.player.speed
-                self.player.pos_x += self.player.speed
                 self.player.speed = 0
 
 
-        elif pygame.key.get_pressed()[pygame.K_RIGHT]:
+        elif pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[pygame.K_d]:
             self.player.speed = 5
             self.right = True
             self.left = False
-            if pygame.key.get_pressed()[pygame.K_SPACE] and self.player.in_air is False:  # TODO
+            if (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]or pygame.key.get_pressed()[pygame.K_w]) and self.player.in_air is False:  # TODO
                 self.player.in_air = True
                 self.player.stopped = False
                 self.player.speed_down = -20
 
-            if pygame.key.get_pressed()[pygame.K_LALT]:
+            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LALT]:
                 self.player.speed = 20
 
             if self.player.player.right + 300 > w:
                 for entity in self.level_data:
-                    entity.shell = entity.shell.move(-self.player.speed, 0)
                     entity.now_pos[0] -= self.player.speed
-                self.player.pos_x += self.player.speed
                 self.player.speed = 0
 
-        elif pygame.key.get_pressed()[pygame.K_SPACE] and self.player.in_air is False: # TODO
+        elif (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP] or pygame.key.get_pressed()[pygame.K_w]) and self.player.in_air is False: # TODO
             self.player.in_air = True
             self.player.stopped = False
             self.player.speed_down = -20

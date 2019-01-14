@@ -1,6 +1,12 @@
--1000 512 10000 _ usual
-256 60 64 _ usual_entity
-384 448 64 _ usual
-384 384 64 _ usual
-384 320 64 _ usual
+-1000 512 10000 MainPlatform usual
+548 384 64 _ usual
+612 384 64 _ usual
+676 384 64 _ usual
+740 384 64 _ usual
+484 448 64 _ usual
+548 448 64 _ usual
+612 448 64 _ usual
+676 448 64 _ usual
+740 448 64 _ usual
+932 196 64 _ bad_entity
 0 0 1 1 CoordsBlock usual
