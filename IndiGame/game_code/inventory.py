@@ -37,7 +37,6 @@ class Invent:
                         pos[0] and self.top + row * self.cell_size < pos[
                     1] and self.top + row * self.cell_size + self.cell_size > pos[1]:
                     self.last_cell = (column, row)
-                    # return self.row_and_column((self.left+column*self.cell_size, self.top+row*self.cell_size), screen, row, column)
                     return self.on_click((self.left+column*self.cell_size, self.top+row*self.cell_size), screen, row,column)
 
     def on_click(self, coords, screen, row, column):

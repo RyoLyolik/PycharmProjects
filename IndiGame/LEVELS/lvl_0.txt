@@ -10,4 +10,12 @@
 740 448 64 _ way:../textures/blocks/dirt.png usual
 804 448 64 _ way:../textures/blocks/grass.png usual
 932 196 64 _ bad_entity
+420 448 64 _ usual
+420 384 64 _ usual
+420 320 64 _ usual
+420 256 64 _ usual
+420 192 64 _ usual
+420 128 64 _ usual
+420 64 64 _ usual
+420 0 64 _ usual
 0 0 1 1 CoordsBlock usual

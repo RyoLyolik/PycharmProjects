@@ -8,8 +8,10 @@ class UsualEntity:
         self.size = (size, size//2)
         self.addit = additionally
         self.color = (100, 255, 225)
+
         self.start_pos = [pos_x, pos_y]
         self.now_pos = [pos_x, pos_y]
+
         self.gravity_force = 1
         self.speed = 2
         self.standart_speed = 2
@@ -19,14 +21,18 @@ class UsualEntity:
         self.right = False
         self.speed_down = 0
         self.gravity_n = True
+
         self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size-0.5*size), 0)
+
         self.health = 20
         self.die = False
         self.cost = 25
         self.paid = False
         self.stopped = []
+
         self.reload = 0
         self.power = 0
+
         self.image = image
 
     def draw(self):

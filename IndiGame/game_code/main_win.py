@@ -171,6 +171,8 @@ class Window:
                 if e == check or e == check_2:
                     self.invsee = not self.invsee
 
+            self.all_sprites.draw(screen)
+
             if self.invsee:
                 self.inv.render(screen)
                 self.player.hand_obj_pos = list(self.inv.get_last_cell())
@@ -179,13 +181,31 @@ class Window:
                 for i in range(len(self.inv_data)):
                     for j in range(len(self.inv_data[i])):
                         inv_obj = self.inv_data[i][j]
-                        inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left+25-inv_obj.size/2,
-                                      inv_obj.place[1] * self.inv.cell_size + self.inv.top+25-inv_obj.size/2), screen)
+                        inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left,
+                                      inv_obj.place[1] * self.inv.cell_size + self.inv.top), screen)
+                        if inv_obj.get_type() != 'Hand':
+                            self.all_sprites.add(inv_obj.sprite)
+
+            else:
+                for i in range(len(self.inv_data)):
+                    for j in range(len(self.inv_data[i])):
+                        inv_obj = self.inv_data[i][j]
+                        if inv_obj.get_type() != 'Hand':
+                            self.all_sprites.remove(inv_obj.sprite)
 
             if self.player.pos_y < -1000:
                 self.player.health -= 1
 
-            self.all_sprites.draw(screen)
+            print(self.player.hand_obj)
+            if self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.left:
+                self.player.hand_obj.draw((self.player.player.left+12, self.player.player.top+32), screen)
+                self.all_sprites.add(self.player.hand_obj.sprite)
+                self.player.hand_obj.sprite.image = load_image(
+                    '../textures/items/usual_sword_flip.png')
+            elif self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.right:
+                self.player.hand_obj.draw((self.player.player.left+4, self.player.player.top+32), screen)
+                self.player.hand_obj.sprite.image = load_image('../textures/items/usual_sword.png')
+                self.all_sprites.add(self.player.hand_obj.sprite)
             pygame.display.flip()
 
     def restart(self):
@@ -260,7 +280,7 @@ class Window:
             elif side[1] == 1:
                 ob2.now_pos[0] -= ob2.speed
                 ob2.speed = 0
-                ob2.now_pos[0] = ob1.now_pos[0] - 2 - 64
+                ob2.now_pos[0] = ob1.now_pos[0] - 1 - 64
 
             if side == [0, 0, 0, 0]:
                 # ob2.stopped = False
