@@ -66,13 +66,13 @@ class Window:
 
     def screen_update(self):
         self.event = True
-        check = pygame.event.Event(2, {'unicode':'e','key': 101, 'mod': 0, 'scancode': 18})
-        check_2 = pygame.event.Event(2, {'unicode': '0','key': 256, 'mod': 0, 'scancode': 82})
+        check = pygame.event.Event(2, {'unicode': 'e','key': 101, 'mod': 0, 'scancode': 18})
+        check_2 = pygame.event.Event(2, {'unicode': '0', 'key': 256, 'mod': 0, 'scancode': 82})
 
         while self.event:
             self.restart()
             self.player.regen_cnt += 1
-            if self.player.regen_cnt > 100:
+            if self.player.regen_cnt > 25:
                 if self.player.health < self.player.max_health:
                     self.player.health += self.player.regen
                 else:
@@ -85,24 +85,24 @@ class Window:
                     if 'Entity' in obj.get_type() and obj.die is False:
                         obj.reload += 1
                         # print(obj.speed_down)
-                        if obj.now_pos[0] - self.player.player.left < -63:
+                        if obj.now_pos[0] - self.player.player.left <= -10:
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
-                        elif obj.now_pos[0] - self.player.player.left > 63:
+                        elif obj.now_pos[0] + obj.size[0] - self.player.player.right >= 10:
                             obj.now_pos[0] -= obj.speed
                             obj.left = True
                             obj.right = False
 
                         for obj_ in self.level_data:
-                            if 'Entity' not in obj_.get_type():
+                            if 'Entity' not in obj_.get_type() and GetSide(ob1=obj_, ob2=obj, l=obj.left, r=obj.right).getting_side() != [0,0,0,0]:
                                 val = self.entity_colliding(obj_, obj)
                                 obj.stopped.append(val[2] == 1)
 
                         for obj_ in self.level_data:
-                            if 'Entity' not in obj_.get_type():
+                            if 'Entity' not in obj_.get_type() and ObjIsNear(ob1=obj_, ob2=obj).getting_side() != [0,0,0,0]:
                                 val = self.entity_colliding(obj_, obj)
-                                near_ch = EntityIsNear(ob1=obj_, ob2=obj).getting_side()
+                                near_ch = ObjIsNear(ob1=obj_, ob2=obj).getting_side()
                                 if True in obj.stopped and (near_ch[0] == 1 or near_ch[1] == 1):
                                     obj.speed_down = -16
                                     obj.stopped = []
@@ -158,7 +158,7 @@ class Window:
                         for obj in self.level_data:
                             if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
                                 if 'Entity' in obj.get_type() and obj.die is False:
-                                    val = EntityIsNear(ob1=obj, player=self.player).getting_side()
+                                    val = ObjIsNear(ob1=obj, player=self.player).getting_side()
                                     if val != [0,0,0,0]:
                                         obj.health -= self.player.player_power
                                         obj.draw()

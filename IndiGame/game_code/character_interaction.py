@@ -46,7 +46,7 @@ class GetSide:
 
             return ret_val
 
-class EntityIsNear:
+class ObjIsNear:
     def __init__(self, ob1=None, ob2=None, player=None):
         self.ob1 = ob1
         self.ob2 = ob2
