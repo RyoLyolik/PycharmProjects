@@ -5,7 +5,6 @@ w,h = 720,480
 class UsualEntity:
     def __init__(self, pos_x, pos_y, size, screen, image=None, additionally=0):
         self.screen = screen
-        self.size = (size, size//2)
         self.addit = additionally
         self.color = (100, 255, 225)
 
@@ -22,7 +21,7 @@ class UsualEntity:
         self.speed_down = 0
         self.gravity_n = True
 
-        self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size-0.5*size), 0)
+        # self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size-0.5*size), 0)
 
         self.health = 20
         self.die = False
@@ -35,14 +34,26 @@ class UsualEntity:
 
         self.image = image
 
+        self.image = ('../textures/entities/Knight/knight_1.png')
+        self.sprite = pygame.sprite.Sprite()
+        self.sprite.image = load_image(self.image)
+        self.sprite.rect = self.sprite.image.get_rect()
+        self.shell = self.sprite.rect
+        self.size = (96,96)
+
     def draw(self):
         if self.paid:
             self.cost = 0
+            self.health = 0
+            self.die = True
         if self.health > 0:
-            self.shell = pygame.draw.rect(self.screen, self.color, (
-                self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)
+            # self.shell = pygame.draw.rect(self.screen, self.color, (
+            #     self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)
+            self.shell = pygame.Rect(self.now_pos[0], self.now_pos[1], self.size[0], self.size[1])
+            self.sprite.rect = self.shell
         else:
             self.die = True
+            self.health = 0
 
     def gravity(self):
         if self.health > 0:
@@ -63,6 +74,12 @@ class BadEntity(UsualEntity):
         super().__init__(pos_x, pos_y, size, screen,image, additionally=0)
         self.color = (255,69,0)
         self.power = 15
+
+        self.image = ('../textures/entities/Knight/knight_1.png')
+        self.sprite = pygame.sprite.Sprite()
+        self.sprite.image = load_image(self.image)
+        self.sprite.rect = self.sprite.image.get_rect()
+        self.shell = self.sprite.rect
 
     def draw(self):
         super().draw()

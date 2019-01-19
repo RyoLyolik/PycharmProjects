@@ -80,17 +80,21 @@ class Window:
                 self.player.regen_cnt = 0
             screen.fill((0, 0, 0))
             self.player.draw_player(screen)
+            print(self.level_data)
             for obj in self.level_data:
-                if obj.now_pos[0]+ obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
+                if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
                     if 'Entity' in obj.get_type() and obj.die is False:
                         obj.reload += 1
                         # print(obj.speed_down)
                         if obj.now_pos[0] - self.player.player.left <= -10:
+                            obj.sprite.image = load_image('../textures\entities\Knight/knight_-1.png')
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
                         elif obj.now_pos[0] + obj.size[0] - self.player.player.right >= 10:
                             obj.now_pos[0] -= obj.speed
+                            obj.sprite.image = load_image(
+                                '../textures\entities\Knight/knight_1.png')
                             obj.left = True
                             obj.right = False
 
@@ -113,6 +117,8 @@ class Window:
                         if obj.shell.colliderect(self.player.player) and 'bad' in obj.get_type().lower() and obj.reload > 100:
                             self.player.health -= obj.power
                             obj.reload = 0
+                    elif 'Entity' in obj.get_type():
+                        self.all_sprites.remove(obj.sprite)
                     if not 'Entity' in obj.get_type():
                         self.colliding(obj, self.player)
                     obj.draw()
@@ -120,30 +126,6 @@ class Window:
             self.key_events()
             self.player.pos_x = self.player.player.left - self.level_data[-1].now_pos[0]
             self.player.pos_y = self.level_data[-1].now_pos[1] - self.player.player.top + 448
-
-            font = pygame.font.Font(None, 25)
-
-            text_fps = font.render('FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
-            text_fps_x = w - text_fps.get_width() - 10
-            text_fps_y = 10
-            screen.blit(text_fps, (text_fps_x, text_fps_y))
-
-            text_xy = font.render(
-                'X: ' + round_to(self.player.pos_x / 64, 3) + '   Y: ' +
-                round_to(self.player.pos_y / 64, 3), 1,
-                (255, 55, 100))
-            text_xy_x = 10
-            text_xy_y = 10
-            screen.blit(text_xy, (text_xy_x, text_xy_y))
-
-            text_money = self.player.money
-            money = font.render('Money: '+str(text_money), 1, (255, 55, 100))
-            screen.blit(money, (360, 10))
-
-            health = self.player.health = int(self.player.health)
-
-            health_rend = font.render('Health: '+str(health), 1, (255, 55, 100))
-            screen.blit(health_rend, (360, 30))
 
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
@@ -164,7 +146,8 @@ class Window:
                                         obj.draw()
 
                                 if 'Entity' in obj.get_type() and obj.paid is False and obj.die is True:
-                                    self.player.money += obj.cost
+                                    obj.health -= self.player.player_power
+                                    obj.die = True
                                     obj.paid = True
 
                 # print(e)
@@ -196,7 +179,7 @@ class Window:
             if self.player.pos_y < -1000:
                 self.player.health -= 1
 
-            print(self.player.hand_obj)
+            # print(self.player.hand_obj)
             if self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.left:
                 self.player.hand_obj.draw((self.player.player.left+12, self.player.player.top+32), screen)
                 self.all_sprites.add(self.player.hand_obj.sprite)
@@ -206,6 +189,32 @@ class Window:
                 self.player.hand_obj.draw((self.player.player.left+4, self.player.player.top+32), screen)
                 self.player.hand_obj.sprite.image = load_image('../textures/items/usual_sword.png')
                 self.all_sprites.add(self.player.hand_obj.sprite)
+
+            # Text rendering
+            font = pygame.font.Font(None, 25)
+
+            text_fps = font.render('FPS: '+str(int(clock.get_fps())), 1, (255, 55, 100))
+            text_fps_x = w - text_fps.get_width() - 10
+            text_fps_y = 10
+            screen.blit(text_fps, (text_fps_x, text_fps_y))
+
+            text_xy = font.render(
+                'X: ' + round_to(self.player.pos_x / 64, 3) + '   Y: ' +
+                round_to(self.player.pos_y / 64, 3), 1,
+                (255, 55, 100))
+            text_xy_x = 10
+            text_xy_y = 10
+            screen.blit(text_xy, (text_xy_x, text_xy_y))
+
+            text_money = self.player.money
+            money = font.render('Money: '+str(text_money), 1, (255, 55, 100))
+            screen.blit(money, (360, 10))
+
+            health = self.player.health = int(self.player.health)
+
+            health_rend = font.render('Health: '+str(health), 1, (255, 55, 100))
+            screen.blit(health_rend, (360, 30))
+
             pygame.display.flip()
 
     def restart(self):
@@ -323,7 +332,7 @@ class Window:
                 self.player.stopped = False
                 self.player.speed_down = -20
 
-            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LALT]:
+            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LCTRL]:
                 self.player.speed = -20
 
             if self.player.player.left - 100 < 0:
@@ -341,7 +350,7 @@ class Window:
                 self.player.stopped = False
                 self.player.speed_down = -20
 
-            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LALT]:
+            if pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LCTRL]:
                 self.player.speed = 20
 
             if self.player.player.right + 300 > w:

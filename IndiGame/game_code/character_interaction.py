@@ -28,19 +28,19 @@ class GetSide:
             return ret_val
 
         if self.ob1 is not None and self.ob2 is not None and self.player is None:
-            if -32 <= (self.ob1.now_pos[1] - self.ob2.now_pos[1]-self.ob2.size[1]) <= 0 and (
+            if -16 <= (self.ob1.now_pos[1] - self.ob2.now_pos[1]-self.ob2.size[1]) <= 0 and (
                     self.ob1.now_pos[0]+self.ob1.size[0] > self.ob2.now_pos[0] and self.ob1.now_pos[0] < self.ob2.now_pos[0]+self.ob2.size[0]):
                 ret_val[2] = 1
 
-            if 32 >= (self.ob1.now_pos[1] + self.ob1.size[1] - self.ob2.now_pos[1]) >= 0 and (
+            if 16 >= (self.ob1.now_pos[1] + self.ob1.size[1] - self.ob2.now_pos[1]) >= 0 and (
                     self.ob1.now_pos[0]+self.ob1.size[0] > self.ob2.now_pos[0] and self.ob1.now_pos[0] < self.ob2.now_pos[0]+self.ob2.size[0]):
                 ret_val[3] = 1
 
-            if 32 >= (self.ob1.now_pos[0]+self.ob1.size[0] - self.ob2.now_pos[0]) >= 0 and self.l and (
+            if 16 >= (self.ob1.now_pos[0]+self.ob1.size[0] - self.ob2.now_pos[0]) >= 0 and self.l and (
                     self.ob1.now_pos[1] < self.ob2.now_pos[1]+self.ob2.size[1] and self.ob1.now_pos[1] + self.ob1.size[1] > self.ob2.now_pos[1]):
                 ret_val[0] = 1
 
-            if -32 <= (self.ob1.now_pos[0] - self.ob2.now_pos[0]-self.ob2.size[0]) <= 0 and self.r and (
+            if -16 <= (self.ob1.now_pos[0] - self.ob2.now_pos[0]-self.ob2.size[0]) <= 0 and self.r and (
                     self.ob1.now_pos[1] < self.ob2.now_pos[1]+self.ob2.size[1] and self.ob1.now_pos[1] + self.ob1.size[1] > self.ob2.now_pos[1]):
                 ret_val[1] = 1
 
