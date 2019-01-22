@@ -1,0 +1,17 @@
+-1000 512 10000 MainPlatform usual
+548 320 64 _ usual
+484 320 64 _ usual
+420 320 64 _ usual
+612 384 64 _ usual
+676 384 64 _ usual
+740 384 64 _ usual
+484 448 64 _ usual
+548 448 64 _ usual
+612 448 64 _ usual
+676 448 64 _ usual
+740 448 64 _ usual
+804 448 64 _ usual
+196 448 64 _ usual
+196 384 64 _ usual
+196 320 64 _ usual
+0 0 1 1 CoordsBlock usual

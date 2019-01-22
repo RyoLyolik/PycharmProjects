@@ -8,8 +8,10 @@ class Player:
         self.sprite.image = load_image('../textures/entities/Player/player_1.png')
         self.sprite.rect = self.sprite.image.get_rect()
 
+        self.block_is_near = False
+
         self.player_size = [64,64]
-        self.speed = 0
+        self.speed = 5
         self.pos_x = 128
         self.pos_y = 60
 

@@ -39,6 +39,7 @@ class UsualEntity:
         self.sprite.image = load_image(self.image)
         self.sprite.rect = self.sprite.image.get_rect()
         self.shell = self.sprite.rect
+        self.sprite.rect = pygame.Rect(pos_x, pos_y, 96, 96)
         self.size = (96,96)
 
     def draw(self):

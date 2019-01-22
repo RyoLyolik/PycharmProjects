@@ -14,6 +14,7 @@ class BlockUsual:
         self.now_pos = [pos_x, pos_y]
         self.image = image
         if self.image is None:
+            self.sprite = None
             self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size), 0)
 
         else:
