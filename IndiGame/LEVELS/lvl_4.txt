@@ -1,3 +1,4 @@
+10000
 -1000 512 10000 MainPlatform usual
 548 320 64 _ usual
 484 320 64 _ usual
