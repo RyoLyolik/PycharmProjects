@@ -67,8 +67,8 @@ class LevelsRender:
         self.show = False
         self.lvls = os.listdir('../LEVELS')
         self.size = 75
-        self.left, self.top = 40, 40
-        self.max = 5
+        self.left, self.top = 67, 40
+        self.max = 7
 
         self.lvls_grid = []
         for lvl in range(len(self.lvls)):

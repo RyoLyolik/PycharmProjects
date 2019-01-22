@@ -9,6 +9,7 @@ from entities import *
 from inventory import *
 from inventory_objcets import *
 from loading_image import load_image
+import menu
 
 
 def round_to(num, rounded_to=3):
@@ -87,6 +88,8 @@ class Window:
         check_2 = pygame.event.Event(2, {'unicode': '0', 'key': 256, 'mod': 0, 'scancode': 82})
 
         while self.event:
+            if self.player.pos_x >= self.end:
+                menu.Menu()
             self.restart()
             self.player.regen_cnt += 1
             if self.player.regen_cnt > 25:
@@ -254,12 +257,13 @@ class Window:
 
     def restart(self):
         if self.player.health <= 0:
-            return self.__init__()
+            return self.__init__(self.lvl)
 
     def load_level(self):
         file = open('../LEVELS/lvl_' + self.lvl + '.txt', 'r')
         level = file.read().split('\n')
-        for block in level:
+        self.end = int(level[0])
+        for block in level[1:]:
             block = block.split()
             if 'way:' in block[-2]:
                 self.level_data.append(
