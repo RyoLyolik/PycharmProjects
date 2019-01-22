@@ -27,7 +27,7 @@ class Player:
         self.left = False
 
         self.money = 0
-
+        self.sprite.rect.left = 128
         self.player = self.sprite.rect
         self.hand_obj_pos = [0, 0]
         self.hand_obj = None

@@ -31,7 +31,7 @@ obj_type = {
 clock = pygame.time.Clock()
 print(dir(pygame))
 pygame.init()
-font = pygame.font.Font(None, 30)
+font = pygame.font.SysFont('comicsansms', 25)
 
 class Window:
     def __init__(self, lvl):
