@@ -7,7 +7,7 @@ from blocks import *
 from character_interaction import *
 from entities import *
 from inventory import *
-from inventory_objcets import *
+from inventory_objects import *
 from loading_image import load_image
 import menu
 from upgrade_item import *
@@ -44,30 +44,30 @@ class Window:
         pygame.display.set_caption('IndiGame')
         self.upg = Upgrade()
         self.player = Player(screen)
-        self.inv_data = [[Hand((0, 0), True, screen), UsualSword((0, 1), False, screen),
-                          Hand((0, 2), False, screen),
-                          Hand((0, 3), False, screen), Hand((0, 4), False, screen)],
-                         [Hand((1, 0), False, screen), Hand((1, 1), False, screen),
-                          Hand((1, 2), False, screen),
-                          Hand((1, 3), False, screen), Hand((1, 4), False, screen)],
-                         [Hand((2, 0), False, screen), Hand((2, 1), False, screen),
-                          Hand((2, 2), False, screen),
-                          Hand((2, 3), False, screen), Hand((2, 4), False, screen)],
-                         [Hand((3, 0), False, screen), Hand((3, 1), False, screen),
-                          Hand((3, 2), False, screen),
-                          Hand((3, 3), False, screen), Hand((3, 4), False, screen)],
-                         [Hand((4, 0), False, screen), Hand((4, 1), False, screen),
-                          Hand((4, 2), False, screen),
-                          Hand((4, 3), False, screen), Hand((4, 4), False, screen)],
-                         [Hand((5, 0), False, screen), Hand((5, 1), False, screen),
-                          Hand((5, 2), False, screen),
-                          Hand((5, 3), False, screen), Hand((5, 4), False, screen)],
-                         [Hand((6, 0), False, screen), Hand((6, 1), False, screen),
-                          Hand((6, 2), False, screen),
-                          Hand((6, 3), False, screen), Hand((6, 4), False, screen)],
-                         [Hand((7, 0), False, screen), Hand((7, 1), False, screen),
-                          Hand((7, 2), False, screen),
-                          Hand((7, 3), False, screen), Hand((7, 4), False, screen)]]
+        self.inv_data = [[Hand((0, 0), True), UsualSword((0, 1), False, screen),
+                          Hand((0, 2), False),
+                          Hand((0, 3), False), Hand((0, 4), False)],
+                         [Hand((1, 0), False), Hand((1, 1), False),
+                          Hand((1, 2), False),
+                          Hand((1, 3), False), Hand((1, 4), False)],
+                         [Hand((2, 0), False), Hand((2, 1), False),
+                          Hand((2, 2), False),
+                          Hand((2, 3), False), Hand((2, 4), False)],
+                         [Hand((3, 0), False), Hand((3, 1), False),
+                          Hand((3, 2), False),
+                          Hand((3, 3), False), Hand((3, 4), False)],
+                         [Hand((4, 0), False), Hand((4, 1), False),
+                          Hand((4, 2), False),
+                          Hand((4, 3), False), Hand((4, 4), False)],
+                         [Hand((5, 0), False), Hand((5, 1), False),
+                          Hand((5, 2), False),
+                          Hand((5, 3), False), Hand((5, 4), False)],
+                         [Hand((6, 0), False), Hand((6, 1), False),
+                          Hand((6, 2), False),
+                          Hand((6, 3), False), Hand((6, 4), False)],
+                         [Hand((7, 0), False), Hand((7, 1), False),
+                          Hand((7, 2), False),
+                          Hand((7, 3), False), Hand((7, 4), False)]]
         # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
         self.level_data = []
         self.player.right = False
@@ -207,8 +207,9 @@ class Window:
                 for i in range(len(self.inv_data)):
                     for j in range(len(self.inv_data[i])):
                         inv_obj = self.inv_data[i][j]
-                        inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left,
-                                      inv_obj.place[1] * self.inv.cell_size + self.inv.top), screen)
+                        if inv_obj.get_type() != 'Hand':
+                            inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left,
+                                          inv_obj.place[1] * self.inv.cell_size + self.inv.top), screen)
                         if inv_obj.get_type() != 'Hand':
                             self.all_sprites.add(inv_obj.sprite)
 
@@ -259,7 +260,7 @@ class Window:
             health_rend = font.render('Health: ' + str(health), 1, (255, 55, 100))
             screen.blit(health_rend, (360, 30))
             # print(self.player.block_is_near)
-            self.upg.draw(screen)
+            self.upg.draw(screen, self.player.hand_obj)
             pygame.display.flip()
 
     def restart(self):

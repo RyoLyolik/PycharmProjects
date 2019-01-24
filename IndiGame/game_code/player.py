@@ -1,5 +1,6 @@
 import pygame
 from loading_image import load_image
+from inventory_objects import Hand
 
 size = w, h, = 720, 480
 class Player:
@@ -30,7 +31,7 @@ class Player:
         self.sprite.rect.left = 128
         self.player = self.sprite.rect
         self.hand_obj_pos = [0, 0]
-        self.hand_obj = None
+        self.hand_obj = Hand((0,0), True)
         self.player_power = self.hand_obj.power if self.hand_obj is not None else 1
         self.max_health = 100
         self.health = self.max_health

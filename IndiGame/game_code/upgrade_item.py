@@ -12,7 +12,7 @@ class Upgrade:
             pygame.draw.rect(screen, (140, 75, 39), (30, 60, 50, 50), 0)
 
             self.sprite = pygame.sprite.Sprite()
-            self.sprite.image = load_image('../textures/items/usual_sword.png')
+            self.sprite.image = load_image(obj.image)
             self.sprite.rect = self.sprite.image.get_rect()
             self.sprite.rect = (31, 61, 48, 48)
             self.all_sprites.add(self.sprite)
