@@ -56,13 +56,6 @@ class Window:
         self.upg = Upgrade()
         self.player = Player(screen)
 
-        # setting_player = {
-        #     'money': self.player.testing(),
-        #     'power': id(self.player.power),
-        #     'upgrade_cost': id(self.player.upgrade_cost),
-        #     'max_health': id(self.player.max_health)
-        # }
-
         settings = load_settings()
 
         self.player.money = settings['player']['money']
@@ -70,8 +63,6 @@ class Window:
         self.player.upgrade_cost = settings['player']['upgrade_cost']
         self.player.max_health = settings['player']['max_health']
         self.player.health = self.player.max_health
-
-
 
         print(self.player.testing())
         print(self.player.money)
@@ -212,14 +203,12 @@ class Window:
             self.key_events()
             self.player.pos_x = self.player.player.left - self.level_data[-1].now_pos[0]
             self.player.pos_y = self.level_data[-1].now_pos[1] - self.player.player.top + 448
-
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.save_settings()
                     self.event = False
                     quit(0)
-
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     self.upg.check_for_upgrade(mouse_rect)
                     if self.invsee:
@@ -433,7 +422,8 @@ class Window:
             pass
         return side
 
-    def key_events(self):
+    def key_events(self,e=None):
+
         if self.player.player.top - 120 < 0 and self.player.in_air:
             if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down < 0:
                 self.player.player.top = self.player.player.top - self.player.speed_down
@@ -461,7 +451,7 @@ class Window:
             if self.player.player.left - 100 < 0:
                 for entity in self.level_data:
                     entity.now_pos[0] -= self.player.speed
-                self.player.speed = 0
+                self.player.player.left -= self.player.speed
 
 
         elif pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[pygame.K_d]:
@@ -481,7 +471,7 @@ class Window:
             if self.player.player.right + 300 > w:
                 for entity in self.level_data:
                     entity.now_pos[0] -= self.player.speed
-                self.player.speed = 0
+                self.player.player.left -= self.player.speed
 
         elif (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP] or
               pygame.key.get_pressed()[pygame.K_w]) and self.player.in_air is False:
@@ -490,8 +480,22 @@ class Window:
             self.player.speed_down = -20
 
         else:
-            self.player.speed = 0
+            # if self.player.player.right + 300 > w:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= self.player.speed
+            #         entity.now_pos[0] -= entity.speed if 'Entity' in entity.get_type() else 0
+            #     self.player.player.left -= self.player.speed
+            # if self.player.player.left - 100 < 0:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= self.player.speed
+            #         entity.now_pos[0] += entity.speed if 'Entity' in entity.get_type() else 0
+            #     self.player.player.left -= self.player.speed
+            # self.player.speed = round(self.player.speed * 0.9, 4)
+            # if abs(self.player.speed) <= 10**-3:
+            #     self.player.speed = 0
+
+            self.player.speed *= 0.7
 
 
-# if __name__ == '__main__':
-#     Window(1)
+if __name__ == '__main__':
+    Window(0)

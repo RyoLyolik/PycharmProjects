@@ -3,5 +3,6 @@
 196 448 64 _ usual
 196 384 64 _ usual
 196 320 64 _ usual
-196 196 64 _ usual_entity
+196 290 64 _ usual
+320 196 64 _ usual_entity
 0 0 1 1 CoordsBlock usual
