@@ -13,9 +13,6 @@ from loading_image import load_image
 import menu
 from upgrade_item import *
 import json
-import ctypes
-import gc
-import weakref
 
 def round_to(num, rounded_to=3):
     if int(num) == num:
@@ -44,17 +41,6 @@ def load_settings():
     data = json.loads(player_settings)
     # print(data)
     return data
-
-
-
-def changing(val, to):
-    val = to
-    print(str(val),val)
-
-def ob(ids):
-    for obj in gc.get_objects():
-        if id(obj) == ids:
-            return obj
 
 clock = pygame.time.Clock()
 # print(dir(pygame))
