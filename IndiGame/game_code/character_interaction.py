@@ -11,22 +11,22 @@ class GetSide:
         ret_val = [0, 0, 0, 0]  # left right top bottom
         if self.ob2 is None and self.ob1 is not None and self.player is not None:
             if -32 <= (self.ob1.shell.top - self.player.player.bottom) <= 0 and (
-                    self.ob1.shell.right > self.player.player.left and self.ob1.shell.left < self.player.player.right):
+                    self.ob1.shell.right > self.player.player.left+5 and self.ob1.shell.left < self.player.player.right-5):
                 ret_val[2] = 1
 
             if 32 >= (self.ob1.shell.bottom - self.player.player.top) >= 0 and (
-                    self.ob1.shell.right > self.player.player.left and self.ob1.shell.left < self.player.player.right):
+                    self.ob1.shell.right > self.player.player.left+5 and self.ob1.shell.left < self.player.player.right-5):
                 ret_val[3] = 1
-            if 32 >= (self.ob1.shell.right - self.player.player.left) >= 0 and self.l and (
+            if 32 >= (self.ob1.shell.right - self.player.player.left+5) > 0 and self.l and (
                     self.ob1.shell.top < self.player.player.bottom and self.ob1.shell.bottom > self.player.player.top):
                 self.player.block_is_near = True
                 ret_val[0] = 1
 
-            if -32 <= (self.ob1.shell.left - self.player.player.right) <= 0 and self.r and (
+            if -32 <= (self.ob1.shell.left - self.player.player.right-5) < 0 and self.r and (
                     self.ob1.shell.top < self.player.player.bottom and self.ob1.shell.bottom > self.player.player.top):
                 self.player.block_is_near = True
                 ret_val[1] = 1
-
+            # print(ret_val)
             return ret_val
 
         if self.ob1 is not None and self.ob2 is not None and self.player is None:

@@ -292,19 +292,19 @@ class Window:
             elif side[0] == 1:
                 check = True
                 pl.speed = 0
-                pl.player.left = ob1.now_pos[0] + ob1.size[0] + 5
+                pl.player.left = ob1.now_pos[0] + ob1.size[0] + 0
 
             elif side[1] == 1:
                 check = True
                 pl.speed = 0
-                pl.player.right = ob1.now_pos[0] - 5
+                pl.player.right = ob1.now_pos[0] - 0
 
             if side[0] == 0 and side[1] == 0:
                 check = False
 
         if ob1.shell.colliderect(pl.player):
-            pl.player.bottom = ob1.shell.bottom - 2 * pl.player.size[1]
-            # print('Произошля колизия')
+            # pl.player.bottom = ob1.shell.bottom - 2 * pl.player.size[1]
+            print('Произошля колизия')
             pass
 
         return check
