@@ -7,6 +7,7 @@ class UsualSword:
         self.in_hand = in_hand
         self.size = 16
         self.power = 5
+        self.image = '../textures/items/usual_sword.png'
 
         self.sprite = pygame.sprite.Sprite()
         self.sprite.image = load_image('../textures/items/usual_sword.png')

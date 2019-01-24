@@ -10,6 +10,7 @@ from inventory import *
 from inventory_objcets import *
 from loading_image import load_image
 import menu
+from upgrade_item import *
 
 
 def round_to(num, rounded_to=3):
@@ -41,6 +42,7 @@ class Window:
         self.inv = Invent(8, 5)
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         pygame.display.set_caption('IndiGame')
+        self.upg = Upgrade()
         self.player = Player(screen)
         self.inv_data = [[Hand((0, 0), True, screen), UsualSword((0, 1), False, screen),
                           Hand((0, 2), False, screen),
@@ -86,6 +88,7 @@ class Window:
         self.event = True
         check = pygame.event.Event(2, {'unicode': 'e', 'key': 101, 'mod': 0, 'scancode': 18})
         check_2 = pygame.event.Event(2, {'unicode': '0', 'key': 256, 'mod': 0, 'scancode': 82})
+        upgr_menu = pygame.event.Event(2, {'unicode': 'f', 'key': 102, 'mod': 0, 'scancode': 33})
 
         while self.event:
             if self.player.pos_x >= self.end:
@@ -191,6 +194,9 @@ class Window:
                 if e == check or e == check_2:
                     self.invsee = not self.invsee
 
+                if upgr_menu == e:
+                    self.upg.on_display = not self.upg.on_display
+
             self.all_sprites.draw(screen)
 
             if self.invsee:
@@ -253,6 +259,7 @@ class Window:
             health_rend = font.render('Health: ' + str(health), 1, (255, 55, 100))
             screen.blit(health_rend, (360, 30))
             # print(self.player.block_is_near)
+            self.upg.draw(screen)
             pygame.display.flip()
 
     def restart(self):
@@ -304,7 +311,6 @@ class Window:
 
         if ob1.shell.colliderect(pl.player):
             # pl.player.bottom = ob1.shell.bottom - 2 * pl.player.size[1]
-            print('Произошля колизия')
             pass
 
         return check
