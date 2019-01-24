@@ -1,6 +1,7 @@
 import pygame
 from loading_image import load_image
 from inventory_objects import Hand
+import gc
 
 size = w, h, = 720, 480
 class Player:
@@ -9,6 +10,7 @@ class Player:
         self.sprite.image = load_image('../textures/entities/Player/player_1.png')
         self.image = '../textures/items/hand.png'
         self.sprite.rect = self.sprite.image.get_rect()
+        self.level = 1
 
         self.block_is_near = False
 
@@ -54,6 +56,9 @@ class Player:
         self.move([self.speed, self.speed_down])
         self.gravity()
         self.actions()
+
+    def testing(self):
+        return self.money
 
     def get_hand_obj(self):
         return self.hand_obj

@@ -6,7 +6,6 @@ class UsualSword:
         self.place = place
         self.in_hand = in_hand
         self.size = 16
-        self.power = 5
         self.image = '../textures/items/usual_sword.png'
 
         self.sprite = pygame.sprite.Sprite()
@@ -15,14 +14,16 @@ class UsualSword:
         self.obj = self.sprite.rect
         self.changed_in_inv = False
 
+        self.power = 5
         self.upgrade_cost = 25
+        self.level = 1
 
     def draw(self, coord, screen):
         self.obj = pygame.Rect(*coord, 16, 16)
         self.sprite.rect = self.obj
 
     def get_type(self):
-        return 'Usual Sword'
+        return 'Usual_Sword'
 
 class Hand:
     def __init__(self, place, in_hand):
@@ -31,7 +32,7 @@ class Hand:
         self.size = 16
         # self.obj = pygame.draw.rect(screen, (255, 10, 150),
         #                                (self.place[0], self.place[1], 0, 0), 0)
-        self.power = 1
+        self.power = 0
         self.image = '../textures/items/hand.png'
     #
     # def draw(self, coord, screen):

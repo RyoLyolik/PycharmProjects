@@ -1,4 +1,5 @@
 import pygame
+pygame.init()
 import random
 import math
 import sys
@@ -11,7 +12,10 @@ from inventory_objects import *
 from loading_image import load_image
 import menu
 from upgrade_item import *
-
+import json
+import ctypes
+import gc
+import weakref
 
 def round_to(num, rounded_to=3):
     if int(num) == num:
@@ -30,9 +34,30 @@ obj_type = {
     'usual_entity': UsualEntity,
     'bad_entity': BadEntity
 }
+
+items = {
+    'Usual_Sword': UsualSword
+}
+
+def load_settings():
+    player_settings = open('../settings/Player.json').read()
+    data = json.loads(player_settings)
+    # print(data)
+    return data
+
+
+
+def changing(val, to):
+    val = to
+    print(str(val),val)
+
+def ob(ids):
+    for obj in gc.get_objects():
+        if id(obj) == ids:
+            return obj
+
 clock = pygame.time.Clock()
-print(dir(pygame))
-pygame.init()
+# print(dir(pygame))
 font = pygame.font.SysFont('comicsansms', 25)
 
 class Window:
@@ -44,6 +69,28 @@ class Window:
         pygame.display.set_caption('IndiGame')
         self.upg = Upgrade()
         self.player = Player(screen)
+
+        # setting_player = {
+        #     'money': self.player.testing(),
+        #     'power': id(self.player.power),
+        #     'upgrade_cost': id(self.player.upgrade_cost),
+        #     'max_health': id(self.player.max_health)
+        # }
+
+        settings = load_settings()
+
+        self.player.money = settings['player']['money']
+        self.player.power = settings['player']['power']
+        self.player.upgrade_cost = settings['player']['upgrade_cost']
+        self.player.max_health = settings['player']['max_health']
+        self.player.health = self.player.max_health
+
+
+
+        print(self.player.testing())
+        print(self.player.money)
+        print(self)
+
         self.inv_data = [[Hand((0, 0), True), UsualSword((0, 1), False, screen),
                           Hand((0, 2), False),
                           Hand((0, 3), False), Hand((0, 4), False)],
@@ -68,6 +115,20 @@ class Window:
                          [Hand((7, 0), False), Hand((7, 1), False),
                           Hand((7, 2), False),
                           Hand((7, 3), False), Hand((7, 4), False)]]
+        print(len(self.inv_data))
+        for i in range(40):
+            y = i // 8
+            x = i % 8
+            if settings['inventory'][str(i)]["type"] == 'Hand':
+                self.inv_data[x][y] = Hand((x,y), True)
+            else:
+                self.inv_data[x][y] = items[settings['inventory'][str(i)]['type']]((x,y),False,screen)
+                self.inv_data[x][y].power = settings['inventory'][str(i)]['power']
+                self.inv_data[x][y].upgrade_cost = settings['inventory'][str(i)]['upgrade_cost']
+                self.inv_data[x][y].level = settings['inventory'][str(i)]['level']
+
+        print(self.inv_data)
+
         # self.main_rect = pygame.draw.rect(screen,(0,0,0),(64,64,w-128,h-128),0)
         self.level_data = []
         self.player.right = False
@@ -168,8 +229,8 @@ class Window:
 
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
-                print(e)
                 if e.type == pygame.QUIT:
+                    self.save_settings()
                     self.event = False
                     quit(0)
 
@@ -268,6 +329,29 @@ class Window:
             screen.blit(power, (360, 60))
             self.upg.draw(screen, self.player)
             pygame.display.flip()
+
+    def save_settings(self):
+        data = load_settings()
+        data['player'] = {
+            "money": self.player.money,
+            "power": self.player.power,
+            "upgrade_cost": self.player.upgrade_cost,
+            "max_health": self.player.max_health
+        }
+        for i in range(40):
+            y = i // 8
+            x = i % 8
+            if self.inv_data[x][y].get_type() != 'Hand':
+                data['inventory'][str(i)] = {
+                    "type": self.inv_data[x][y].get_type(),
+                    "level": self.inv_data[x][y].level,
+                    "power": self.inv_data[x][y].power,
+                    "upgrade_cost": self.inv_data[x][y].upgrade_cost
+                }
+
+        settings = open('../settings/Player.json', mode='w')
+        json.dump(data, settings)
+
 
     def restart(self):
         if self.player.health <= 0:
@@ -421,3 +505,7 @@ class Window:
 
         else:
             self.player.speed = 0
+
+
+# if __name__ == '__main__':
+#     Window(1)
