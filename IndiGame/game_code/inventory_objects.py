@@ -15,6 +15,8 @@ class UsualSword:
         self.obj = self.sprite.rect
         self.changed_in_inv = False
 
+        self.upgrade_cost = 25
+
     def draw(self, coord, screen):
         self.obj = pygame.Rect(*coord, 16, 16)
         self.sprite.rect = self.obj
@@ -30,6 +32,7 @@ class Hand:
         # self.obj = pygame.draw.rect(screen, (255, 10, 150),
         #                                (self.place[0], self.place[1], 0, 0), 0)
         self.power = 1
+        self.image = '../textures/items/hand.png'
     #
     # def draw(self, coord, screen):
     #     self.obj = pygame.draw.rect(screen, (255, 10, 150),

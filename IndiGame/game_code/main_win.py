@@ -91,6 +91,7 @@ class Window:
         upgr_menu = pygame.event.Event(2, {'unicode': 'f', 'key': 102, 'mod': 0, 'scancode': 33})
 
         while self.event:
+            mouse_rect = pygame.Rect(*pygame.mouse.get_pos(), 1, 1)
             if self.player.pos_x >= self.end:
                 menu.Menu()
             self.restart()
@@ -134,9 +135,7 @@ class Window:
                         for obj_ in self.level_data:
                             if 'Entity' not in obj_.get_type() and ObjIsNear(ob1=obj_,
                                                                              ob2=obj).getting_side() != [
-                                0, 0,
-                                0,
-                                0]:
+                                0, 0, 0, 0]:
                                 val = self.entity_colliding(obj_, obj)
                                 near_ch = ObjIsNear(ob1=obj_, ob2=obj).getting_side()
                                 if True in obj.stopped and (near_ch[0] == 1 or near_ch[1] == 1):
@@ -169,20 +168,25 @@ class Window:
 
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
+                print(e)
                 if e.type == pygame.QUIT:
                     self.event = False
                     quit(0)
 
                 if e.type == pygame.MOUSEBUTTONDOWN:
+                    self.upg.check_for_upgrade(mouse_rect)
                     if self.invsee:
+                        self.upg.all_sprites.empty()
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
                     elif not self.invsee:
                         for obj in self.level_data:
-                            if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
+                            if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[
+                                0] - 200 < w and not (
+                            self.upg.upgrade_rect_border.colliderect(mouse_rect)):
                                 if 'Entity' in obj.get_type() and obj.die is False:
                                     val = ObjIsNear(ob1=obj, player=self.player).getting_side()
                                     if val != [0, 0, 0, 0]:
-                                        obj.health -= self.player.player_power
+                                        obj.health -= self.player.player_power + self.player.power
                                         obj.draw()
 
                                 if 'Entity' in obj.get_type() and obj.paid is False and obj.die is True:
@@ -195,6 +199,7 @@ class Window:
                     self.invsee = not self.invsee
 
                 if upgr_menu == e:
+                    self.upg.all_sprites.empty()
                     self.upg.on_display = not self.upg.on_display
 
             self.all_sprites.draw(screen)
@@ -256,11 +261,12 @@ class Window:
             screen.blit(money, (360, 10))
 
             health = self.player.health = int(self.player.health)
-
             health_rend = font.render('Health: ' + str(health), 1, (255, 55, 100))
-            screen.blit(health_rend, (360, 30))
-            # print(self.player.block_is_near)
-            self.upg.draw(screen, self.player.hand_obj)
+            screen.blit(health_rend, (360, 35))
+
+            power = font.render('Power: ' + str(self.player.player_power), 1, (255, 55, 100))
+            screen.blit(power, (360, 60))
+            self.upg.draw(screen, self.player)
             pygame.display.flip()
 
     def restart(self):
@@ -362,13 +368,10 @@ class Window:
             if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down < 0:
                 self.player.player.top = self.player.player.top - self.player.speed_down
                 for entity in self.level_data:
-                    # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
                     entity.now_pos[1] -= self.player.speed_down
         if self.player.player.bottom + 120 > h and self.player.speed_down > 0:
-            # if self.level_data[0].shell.top - self.player.player.top > 150 and self.player.speed_down > 0:
             self.player.player.top = self.player.player.top - self.player.speed_down
             for entity in self.level_data:
-                # entity.shell = entity.shell.move(-self.player.speed, -self.player.speed_down)
                 entity.now_pos[1] -= self.player.speed_down
 
         if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_a]:

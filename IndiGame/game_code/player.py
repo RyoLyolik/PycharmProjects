@@ -7,6 +7,7 @@ class Player:
     def __init__(self, screen):
         self.sprite = pygame.sprite.Sprite()
         self.sprite.image = load_image('../textures/entities/Player/player_1.png')
+        self.image = '../textures/items/hand.png'
         self.sprite.rect = self.sprite.image.get_rect()
 
         self.block_is_near = False
@@ -39,6 +40,9 @@ class Player:
         self.regen_cnt = 0
         self.regen = 1
         self.move([0, 100])
+
+        self.power = 1
+        self.upgrade_cost = 25
 
 
     def draw_player(self, screen):
@@ -75,6 +79,6 @@ class Player:
             self.stopped = True
 
     def actions(self):
-        self.player_power = self.hand_obj.power if self.hand_obj is not None else 1
+        self.player_power = self.hand_obj.power + self.power
 
 
