@@ -44,8 +44,9 @@ class Upgrade:
         else:
             self.upgrade_rect_border = pygame.Rect(0,0,0,0)
 
-    def check_for_upgrade(self,mouse_rect):
-        if self.on_display and self.upgrade_rect_border.colliderect(mouse_rect):
+    def check_for_upgrade(self, mouse_rect, player):
+        if self.on_display and self.upgrade_rect_border.colliderect(mouse_rect) and player.money >= self.obj.upgrade_cost:
+            player.money -= self.obj.upgrade_cost
             self.obj.power = int(round(((self.obj.power+1)*1.1),0))
             self.obj.upgrade_cost = int(round(((self.obj.upgrade_cost+1)*1.1),0))
             self.obj.level += 1

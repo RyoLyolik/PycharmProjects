@@ -56,14 +56,6 @@ class Window:
         self.upg = Upgrade()
         self.player = Player(screen)
 
-        settings = load_settings()
-
-        self.player.money = settings['player']['money']
-        self.player.power = settings['player']['power']
-        self.player.upgrade_cost = settings['player']['upgrade_cost']
-        self.player.max_health = settings['player']['max_health']
-        self.player.health = self.player.max_health
-
         print(self.player.testing())
         print(self.player.money)
         print(self)
@@ -92,6 +84,16 @@ class Window:
                          [Hand((7, 0), False), Hand((7, 1), False),
                           Hand((7, 2), False),
                           Hand((7, 3), False), Hand((7, 4), False)]]
+
+        settings = load_settings()
+
+        self.player.money = settings['player']['money']
+        self.player.power = settings['player']['power']
+        self.player.upgrade_cost = settings['player']['upgrade_cost']
+        self.player.max_health = settings['player']['max_health']
+        self.player.health = self.player.max_health
+        self.player.level = settings['player']['level']
+
         print(len(self.inv_data))
         for i in range(40):
             y = i // 8
@@ -210,7 +212,7 @@ class Window:
                     self.event = False
                     quit(0)
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    self.upg.check_for_upgrade(mouse_rect)
+                    self.upg.check_for_upgrade(mouse_rect,self.player)
                     if self.invsee:
                         self.upg.all_sprites.empty()
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
@@ -311,7 +313,8 @@ class Window:
             "money": self.player.money,
             "power": self.player.power,
             "upgrade_cost": self.player.upgrade_cost,
-            "max_health": self.player.max_health
+            "max_health": self.player.max_health,
+            "level": self.player.level
         }
         for i in range(40):
             y = i // 8
