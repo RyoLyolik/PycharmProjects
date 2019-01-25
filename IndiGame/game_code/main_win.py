@@ -131,8 +131,14 @@ class Window:
         upgr_menu = pygame.event.Event(2, {'unicode': 'f', 'key': 102, 'mod': 0, 'scancode': 33})
 
         while self.event:
+            self.player.pos_x = round(self.player.pos_x, 0)
+            self.player.speed = round(self.player.speed, 1)
+            if abs(self.player.speed) <= 0.1:
+                self.player.speed = 0
+            # print(self.player.pos_x, self.player.speed)
             mouse_rect = pygame.Rect(*pygame.mouse.get_pos(), 1, 1)
             if self.player.pos_x >= self.end:
+                self.save_settings()
                 menu.Menu()
             self.restart()
             self.player.regen_cnt += 1
@@ -152,12 +158,12 @@ class Window:
                     if 'Entity' in obj.get_type() and obj.die is False:
                         obj.reload += 1
                         # print(obj.speed_down)
-                        if obj.now_pos[0] - self.player.player.left <= -10:
+                        if int(obj.now_pos[0] - self.player.player.left) < -32:
                             obj.sprite.image = load_image('../textures\entities\Knight/knight_-1.png')
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
-                        elif obj.now_pos[0] + obj.size[0] - self.player.player.right >= 10:
+                        elif int(obj.now_pos[0] - self.player.player.right) > 32 - obj.size[0]:
                             obj.now_pos[0] -= obj.speed
                             obj.sprite.image = load_image(
                                 '../textures\entities\Knight/knight_1.png')
@@ -179,6 +185,7 @@ class Window:
                                 val = self.entity_colliding(obj_, obj)
                                 near_ch = ObjIsNear(ob1=obj_, ob2=obj).getting_side()
                                 if True in obj.stopped and (near_ch[0] == 1 or near_ch[1] == 1):
+                                    print(random.choice('123456'))
                                     obj.speed_down = -16
                                     obj.stopped = []
 
@@ -194,9 +201,11 @@ class Window:
                     if not 'Entity' in obj.get_type():
                         val = self.colliding(obj, self.player)
                         blocks_near.append(val)
+
                 elif not (obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w):
                     if obj.sprite in self.all_sprites and obj.sprite is not None:
                         self.all_sprites.remove(obj.sprite)
+
                 obj.draw()
             if True in blocks_near:
                 self.player.block_is_near = True
@@ -299,12 +308,24 @@ class Window:
             screen.blit(money, (360, 10))
 
             health = self.player.health = int(self.player.health)
-            health_rend = font.render('Health: ' + str(health), 1, (255, 55, 100))
+            health_rend = font.render('Health: ' + str(health) + ' / ' + str(self.player.max_health), 1, (255, 55, 100))
             screen.blit(health_rend, (360, 35))
 
             power = font.render('Power: ' + str(self.player.player_power), 1, (255, 55, 100))
             screen.blit(power, (360, 60))
             self.upg.draw(screen, self.player)
+
+            # if self.player.player.right + 300 > w:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= 5
+            #     self.player.player.left -= self.player.speed
+            # if self.player.player.left - 100 < 0:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= self.player.speed
+            #     self.player.player.left += 5
+            # self.player.speed = round(self.player.speed * 0.9, 4)
+            # if abs(self.player.speed) <= 10**-3:
+            #     self.player.speed = 0
             pygame.display.flip()
 
     def save_settings(self):
@@ -437,6 +458,17 @@ class Window:
             for entity in self.level_data:
                 entity.now_pos[1] -= self.player.speed_down
 
+        if self.player.player.right + 300 > w:
+            for entity in self.level_data:
+                entity.now_pos[0] -= self.player.speed
+            self.player.player.left -= self.player.speed
+
+        if self.player.player.left - 100 < 0:
+            for entity in self.level_data:
+                entity.now_pos[0] -= self.player.speed
+            self.player.player.left -= self.player.speed
+
+
         if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_a]:
             self.player.speed = -5
             self.player.left = True
@@ -451,10 +483,10 @@ class Window:
                 pygame.K_LCTRL] and self.player.block_is_near is False:
                 self.player.speed = -20
 
-            if self.player.player.left - 100 < 0:
-                for entity in self.level_data:
-                    entity.now_pos[0] -= self.player.speed
-                self.player.player.left -= self.player.speed
+            # if self.player.player.left - 100 < 0:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= self.player.speed
+            #     self.player.player.left -= self.player.speed
 
 
         elif pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[pygame.K_d]:
@@ -471,10 +503,10 @@ class Window:
                 pygame.K_LCTRL] and self.player.block_is_near is False:
                 self.player.speed = 20
 
-            if self.player.player.right + 300 > w:
-                for entity in self.level_data:
-                    entity.now_pos[0] -= self.player.speed
-                self.player.player.left -= self.player.speed
+            # if self.player.player.right + 300 > w:
+            #     for entity in self.level_data:
+            #         entity.now_pos[0] -= self.player.speed
+            #     self.player.player.left -= self.player.speed
 
         elif (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP] or
               pygame.key.get_pressed()[pygame.K_w]) and self.player.in_air is False:
@@ -498,7 +530,5 @@ class Window:
             #     self.player.speed = 0
 
             self.player.speed *= 0.7
-
-
 if __name__ == '__main__':
     Window(0)

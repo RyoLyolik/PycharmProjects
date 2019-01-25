@@ -48,5 +48,7 @@ class Upgrade:
         if self.on_display and self.upgrade_rect_border.colliderect(mouse_rect) and player.money >= self.obj.upgrade_cost:
             player.money -= self.obj.upgrade_cost
             self.obj.power = int(round(((self.obj.power+1)*1.1),0))
-            self.obj.upgrade_cost = int(round(((self.obj.upgrade_cost+1)*1.1),0))
+            self.obj.upgrade_cost = int(round(((self.obj.upgrade_cost)*1.1),0))
             self.obj.level += 1
+            if self.obj == player:
+                player.max_health = int(round(((player.max_health)*1.05),0))

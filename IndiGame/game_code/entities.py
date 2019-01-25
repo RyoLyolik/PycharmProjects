@@ -63,6 +63,7 @@ class UsualEntity:
                 self.speed_down += self.gravity_force
             else:
                 self.speed_down = 13
+            # print(self.speed_down)
             self.now_pos[1] += self.speed_down
 
 
