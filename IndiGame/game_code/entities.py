@@ -35,6 +35,8 @@ class UsualEntity:
         self.image = image
 
         self.image = ('../textures/entities/Knight/knight_1.png')
+        self.image_flip = load_image(self.image)
+        self.image_default = load_image('../textures/entities/Knight/knight_-1.png')
         self.sprite = pygame.sprite.Sprite()
         self.sprite.image = load_image(self.image)
         self.sprite.rect = self.sprite.image.get_rect()

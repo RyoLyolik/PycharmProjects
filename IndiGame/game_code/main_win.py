@@ -33,7 +33,8 @@ obj_type = {
 }
 
 items = {
-    'Usual_Sword': UsualSword
+    'Usual_Sword': UsualSword,
+    'Secret_Sword': SecretSword
 }
 
 def load_settings():
@@ -46,6 +47,10 @@ clock = pygame.time.Clock()
 # print(dir(pygame))
 font = pygame.font.SysFont('comicsansms', 25)
 
+walk_s = pygame.mixer.Sound('../audio/walk.ogg')
+coins_s = pygame.mixer.Sound('../audio/gold.ogg')
+walk_s.set_volume(0.05)
+
 class Window:
     def __init__(self, lvl):
         global screen
@@ -56,11 +61,11 @@ class Window:
         self.upg = Upgrade()
         self.player = Player(screen)
 
-        print(self.player.testing())
+        # print(self.player.testing())
         print(self.player.money)
         print(self)
 
-        self.inv_data = [[Hand((0, 0), True), UsualSword((0, 1), False, screen),
+        self.inv_data = [[Hand((0, 0), True), Hand((0, 2), False),
                           Hand((0, 2), False),
                           Hand((0, 3), False), Hand((0, 4), False)],
                          [Hand((1, 0), False), Hand((1, 1), False),
@@ -101,6 +106,10 @@ class Window:
             if settings['inventory'][str(i)]["type"] == 'Hand':
                 self.inv_data[x][y] = Hand((x,y), True)
             else:
+                print(self.inv_data)
+                print(settings['inventory'][str(i)]['type'])
+                print()
+                print(settings['inventory'][str(i)])
                 self.inv_data[x][y] = items[settings['inventory'][str(i)]['type']]((x,y),False,screen)
                 self.inv_data[x][y].power = settings['inventory'][str(i)]['power']
                 self.inv_data[x][y].upgrade_cost = settings['inventory'][str(i)]['upgrade_cost']
@@ -117,7 +126,6 @@ class Window:
         self.load_level()
 
         self.all_sprites = pygame.sprite.Group()
-        self.all_sprites.add(self.player.sprite)
         for obj in self.level_data:
             if obj.image is not None:
                 self.all_sprites.add(obj.sprite)
@@ -131,6 +139,8 @@ class Window:
         upgr_menu = pygame.event.Event(2, {'unicode': 'f', 'key': 102, 'mod': 0, 'scancode': 33})
 
         while self.event:
+            check_for_moving = self.player.pos_x
+            check_for_collect = self.player.money
             self.player.pos_x = round(self.player.pos_x, 0)
             self.player.speed = round(self.player.speed, 1)
             if abs(self.player.speed) <= 0.1:
@@ -156,17 +166,17 @@ class Window:
                     if obj.sprite not in self.all_sprites and obj.sprite is not None:
                         self.all_sprites.add(obj.sprite)
                     if 'Entity' in obj.get_type() and obj.die is False:
+                        # print(obj.health, self.player.power)
                         obj.reload += 1
                         # print(obj.speed_down)
                         if int(obj.now_pos[0] - self.player.player.left) < -32:
-                            obj.sprite.image = load_image('../textures\entities\Knight/knight_-1.png')
+                            obj.sprite.image = obj.image_default
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
                         elif int(obj.now_pos[0] - self.player.player.right) > 32 - obj.size[0]:
                             obj.now_pos[0] -= obj.speed
-                            obj.sprite.image = load_image(
-                                '../textures\entities\Knight/knight_1.png')
+                            obj.sprite.image = obj.image_flip
                             obj.left = True
                             obj.right = False
 
@@ -185,7 +195,6 @@ class Window:
                                 val = self.entity_colliding(obj_, obj)
                                 near_ch = ObjIsNear(ob1=obj_, ob2=obj).getting_side()
                                 if True in obj.stopped and (near_ch[0] == 1 or near_ch[1] == 1):
-                                    print(random.choice('123456'))
                                     obj.speed_down = -16
                                     obj.stopped = []
 
@@ -197,6 +206,7 @@ class Window:
                             self.player.health -= obj.power
                             obj.reload = 0
                     elif 'Entity' in obj.get_type() and obj.die:
+                        self.player.money += obj.cost
                         self.all_sprites.remove(obj.sprite)
                     if not 'Entity' in obj.get_type():
                         val = self.colliding(obj, self.player)
@@ -221,7 +231,7 @@ class Window:
                     self.event = False
                     quit(0)
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    self.upg.check_for_upgrade(mouse_rect,self.player)
+                    self.upg.check_for_updates(mouse_rect, self.player)
                     if self.invsee:
                         self.upg.all_sprites.empty()
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
@@ -229,17 +239,20 @@ class Window:
                         for obj in self.level_data:
                             if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[
                                 0] - 200 < w and not (
-                            self.upg.upgrade_rect_border.colliderect(mouse_rect)):
-                                if 'Entity' in obj.get_type() and obj.die is False:
+                                    self.upg.main_rect.colliderect(
+                                        mouse_rect)) and 'Entity' in obj.get_type():
+                                print(obj.health)
+                                if obj.die is False:
                                     val = ObjIsNear(ob1=obj, player=self.player).getting_side()
                                     if val != [0, 0, 0, 0]:
-                                        obj.health -= self.player.player_power + self.player.power
+                                        obj.health -= self.player.player_power
                                         obj.draw()
 
-                                if 'Entity' in obj.get_type() and obj.paid is False and obj.die is True:
+                                if obj.paid is False and obj.die is True:
                                     obj.health -= self.player.player_power
                                     obj.die = True
                                     obj.paid = True
+                                print(obj.health)
 
                 # print(e)
                 if e == check or e == check_2:
@@ -262,7 +275,8 @@ class Window:
                         if inv_obj.get_type() != 'Hand':
                             inv_obj.draw((inv_obj.place[0] * self.inv.cell_size + self.inv.left,
                                           inv_obj.place[1] * self.inv.cell_size + self.inv.top), screen)
-                        if inv_obj.get_type() != 'Hand':
+                        if inv_obj.get_type() != 'Hand' and not self.all_sprites.has(
+                                inv_obj.sprite):
                             self.all_sprites.add(inv_obj.sprite)
 
             else:
@@ -279,14 +293,15 @@ class Window:
             if self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.left:
                 self.player.hand_obj.draw(
                     (self.player.player.left + 12, self.player.player.top + 32), screen)
-                self.all_sprites.add(self.player.hand_obj.sprite)
-                self.player.hand_obj.sprite.image = load_image(
-                    '../textures/items/usual_sword_flip.png')
+                if not self.all_sprites.has(self.player.hand_obj.sprite):
+                    self.all_sprites.add(self.player.hand_obj.sprite)
+                self.player.hand_obj.sprite.image = self.player.hand_obj.sprite.image_flip
             elif self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.right:
                 self.player.hand_obj.draw(
                     (self.player.player.left + 4, self.player.player.top + 32), screen)
-                self.player.hand_obj.sprite.image = load_image('../textures/items/usual_sword.png')
-                self.all_sprites.add(self.player.hand_obj.sprite)
+                self.player.hand_obj.sprite.image = self.player.hand_obj.sprite.image_default
+                if not self.all_sprites.has(self.player.hand_obj.sprite):
+                    self.all_sprites.add(self.player.hand_obj.sprite)
 
             # Text rendering
 
@@ -315,17 +330,12 @@ class Window:
             screen.blit(power, (360, 60))
             self.upg.draw(screen, self.player)
 
-            # if self.player.player.right + 300 > w:
-            #     for entity in self.level_data:
-            #         entity.now_pos[0] -= 5
-            #     self.player.player.left -= self.player.speed
-            # if self.player.player.left - 100 < 0:
-            #     for entity in self.level_data:
-            #         entity.now_pos[0] -= self.player.speed
-            #     self.player.player.left += 5
-            # self.player.speed = round(self.player.speed * 0.9, 4)
-            # if abs(self.player.speed) <= 10**-3:
-            #     self.player.speed = 0
+            if check_for_moving != self.player.pos_x:
+                walk_s.play(0)
+
+            if check_for_collect != self.player.money:
+                coins_s.play(0)
+
             pygame.display.flip()
 
     def save_settings(self):
@@ -529,6 +539,6 @@ class Window:
             # if abs(self.player.speed) <= 10**-3:
             #     self.player.speed = 0
 
-            self.player.speed *= 0.7
+            self.player.speed *= 0.4
 if __name__ == '__main__':
     Window(0)

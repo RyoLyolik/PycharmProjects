@@ -7,17 +7,18 @@ class Upgrade:
         self.on_display = False
         self.all_sprites = pygame.sprite.Group()
         self.sprite = pygame.sprite.Sprite()
+        self.show_description = False
 
     def draw(self, screen, player):
         self.obj = player.hand_obj if player.hand_obj.get_type() != 'Hand' else player
+        mouse_rect = pygame.Rect(*pygame.mouse.get_pos(), 1, 1)
         if self.on_display:
-
-            pygame.draw.rect(screen, (75,50,26), (20,46, 250, 79), 0)
+            self.main_rect = pygame.draw.rect(screen, (75,50,26), (20,46, 250, 79), 0)
             pygame.draw.rect(screen, (95, 53, 29), (24, 50, 242, 71), 0)
 
 
-            pygame.draw.rect(screen, (115, 63, 34), (26, 60, 58, 50), 0)
-            pygame.draw.rect(screen, (115, 63, 34), (30, 56, 50, 58), 0)
+            self.beauty = pygame.draw.rect(screen, (115, 63, 34), (26, 60, 58, 50), 0)
+            self.beauty_2 = pygame.draw.rect(screen, (115, 63, 34), (30, 56, 50, 58), 0)
             # pygame.draw.circle(screen, (115, 63, 34), (30, 60), 4)
             # pygame.draw.circle(screen, (115, 63, 34), (80, 60), 4)
             # pygame.draw.circle(screen, (115, 63, 34), (30, 110), 4)
@@ -41,10 +42,25 @@ class Upgrade:
                 self.sprite.rect = (31, 61, 48, 48)
                 self.all_sprites.add(self.sprite)
             self.all_sprites.draw(screen)
-        else:
-            self.upgrade_rect_border = pygame.Rect(0,0,0,0)
 
-    def check_for_upgrade(self, mouse_rect, player):
+            if self.show_description and (self.beauty.colliderect(mouse_rect) or self.beauty_2.colliderect(mouse_rect)):
+                x,y = pygame.mouse.get_pos()
+                pygame.draw.rect(screen, (115, 63, 34), (x-50,y+50, 136,32), 0)
+                pygame.draw.rect(screen, (115, 63, 34), (x-46, y+46, 128, 40), 0)
+                pygame.draw.circle(screen, (115, 63, 34), (x-46, y+50), 4)
+                pygame.draw.circle(screen, (115, 63, 34), (x + 82, y + 50), 4)
+                pygame.draw.circle(screen, (115, 63, 34), (x-46, y+50+32), 4)
+                pygame.draw.circle(screen, (115, 63, 34), (x + 82, y + 50+32), 4)
+
+                pygame.draw.rect(screen, (75, 50, 26), (x-46, y+50, 128, 32), 0)
+
+                descript = font.render(' '.join(self.obj.get_type().split('_')), 1, (255, 255, 255), 5)
+                screen.blit(descript, (x-15,y+55))
+
+        else:
+            self.main_rect = pygame.Rect(0,0,0,0)
+
+    def check_for_updates(self, mouse_rect, player):
         if self.on_display and self.upgrade_rect_border.colliderect(mouse_rect) and player.money >= self.obj.upgrade_cost:
             player.money -= self.obj.upgrade_cost
             self.obj.power = int(round(((self.obj.power+1)*1.1),0))
@@ -52,3 +68,8 @@ class Upgrade:
             self.obj.level += 1
             if self.obj == player:
                 player.max_health = int(round(((player.max_health)*1.05),0))
+
+        elif self.on_display and (self.beauty.colliderect(mouse_rect) or self.beauty_2.colliderect(mouse_rect)):
+            self.show_description = not self.show_description
+
+
