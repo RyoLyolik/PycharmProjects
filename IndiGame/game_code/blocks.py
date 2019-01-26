@@ -21,6 +21,7 @@ class BlockUsual:
             self.sprite = pygame.sprite.Sprite()
             print(image)
             self.sprite.image = load_image(image)
+            self.sprite.image = pygame.transform.scale(self.sprite.image, (self.size[0], self.size[1]))
             self.sprite.rect = self.sprite.image.get_rect()
             self.shell = self.sprite.rect
 

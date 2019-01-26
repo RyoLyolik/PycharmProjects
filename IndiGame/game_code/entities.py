@@ -56,8 +56,6 @@ class UsualEntity:
             self.health = 0
             self.die = True
         if self.health > 0:
-            # self.shell = pygame.draw.rect(self.screen, self.color, (
-            #     self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)]
             health_text = font.render(str(self.health), 1,(255, 55, 100))
             self.screen.blit(health_text, (self.now_pos[0]+self.size[0]//2, self.now_pos[1]-40))
             self.shell = pygame.Rect(self.now_pos[0], self.now_pos[1], self.size[0], self.size[1])

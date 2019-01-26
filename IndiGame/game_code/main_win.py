@@ -163,7 +163,6 @@ class Window:
             screen.fill((0, 0, 0))
             self.player.draw_player(screen)
             blocks_near = []
-            some_thing = []
             for obj in self.level_data:
                 if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
                     if obj.sprite not in self.all_sprites and obj.sprite is not None:
@@ -201,8 +200,6 @@ class Window:
                                     obj.speed_down = -16
                                     obj.stopped = []
 
-                                some_thing.append(obj.now_pos[0]-obj_.now_pos[0])
-
                         if obj.gravity_n is True:
                             obj.gravity()
 
@@ -222,7 +219,6 @@ class Window:
                         self.all_sprites.remove(obj.sprite)
 
                 obj.draw()
-            print(some_thing)
             if True in blocks_near:
                 self.player.block_is_near = True
             else:
@@ -406,7 +402,7 @@ class Window:
 
             elif side[3] == 1 and pl.in_air:
                 pl.speed_down = 0
-                pl.player.top = ob1.now_pos[1] + ob1.size[1] + 0
+                pl.player.top = ob1.now_pos[1] + ob1.size[1] + 1
 
             elif side[0] == 1:
                 check = True
@@ -420,7 +416,6 @@ class Window:
 
             if side[0] == 0 and side[1] == 0:
                 check = False
-
         if ob1.shell.colliderect(pl.player):
             # pl.player.bottom = ob1.shell.bottom - 2 * pl.player.size[1]
             pass
