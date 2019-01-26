@@ -12,6 +12,7 @@ class Upgrade:
     def draw(self, screen, player):
         self.obj = player.hand_obj if player.hand_obj.get_type() != 'Hand' else player
         mouse_rect = pygame.Rect(*pygame.mouse.get_pos(), 1, 1)
+        self.main_rect = pygame.Rect(0, 0, 0, 0)
         if self.on_display:
             self.main_rect = pygame.draw.rect(screen, (75,50,26), (475,46, 250, 79), 0)
             pygame.draw.rect(screen, (95, 53, 29), (479, 50, 242, 71), 0)

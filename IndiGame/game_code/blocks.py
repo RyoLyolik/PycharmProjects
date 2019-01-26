@@ -25,6 +25,7 @@ class BlockUsual:
             self.shell = self.sprite.rect
 
     def draw(self):
+        self.now_pos[0] = round(self.now_pos[0], 0)
         if self.image is None:
             self.shell = pygame.draw.rect(self.screen, self.color, (
                 self.now_pos[0], self.now_pos[1], self.size[0], self.size[1]), 0)

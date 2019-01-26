@@ -57,7 +57,10 @@ class Window:
         self.lvl = str(lvl)
         self.inv = Invent(8, 5)
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+        pygame.display.set_icon(screen)
         pygame.display.set_caption('IndiGame')
+        a = pygame.image.load('icon.png')
+        pygame.display.set_icon(a)
         self.upg = Upgrade()
         self.player = Player(screen)
 
@@ -160,6 +163,7 @@ class Window:
             screen.fill((0, 0, 0))
             self.player.draw_player(screen)
             blocks_near = []
+            some_thing = []
             for obj in self.level_data:
                 if obj.now_pos[0] + obj.size[0] + 200 > 0 and obj.now_pos[0] - 200 < w:
                     if obj.sprite not in self.all_sprites and obj.sprite is not None:
@@ -197,6 +201,8 @@ class Window:
                                     obj.speed_down = -16
                                     obj.stopped = []
 
+                                some_thing.append(obj.now_pos[0]-obj_.now_pos[0])
+
                         if obj.gravity_n is True:
                             obj.gravity()
 
@@ -216,6 +222,7 @@ class Window:
                         self.all_sprites.remove(obj.sprite)
 
                 obj.draw()
+            print(some_thing)
             if True in blocks_near:
                 self.player.block_is_near = True
             else:
@@ -225,7 +232,6 @@ class Window:
             self.player.pos_y = self.level_data[-1].now_pos[1] - self.player.player.top + 448
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
-                print(e)
                 if e.type == pygame.QUIT:
                     self.save_settings()
                     self.event = False
@@ -476,12 +482,12 @@ class Window:
 
         if self.player.player.right + 300 > w:
             for entity in self.level_data:
-                entity.now_pos[0] -= self.player.speed
+                entity.now_pos[0] = round(entity.now_pos[0]-self.player.speed,0)
             self.player.player.left -= self.player.speed
 
         if self.player.player.left - 100 < 0:
             for entity in self.level_data:
-                entity.now_pos[0] -= self.player.speed
+                entity.now_pos[0] = round(entity.now_pos[0] - self.player.speed, 0)
             self.player.player.left -= self.player.speed
 
 
@@ -544,7 +550,9 @@ class Window:
             # self.player.speed = round(self.player.speed * 0.9, 4)
             # if abs(self.player.speed) <= 10**-3:
             #     self.player.speed = 0
-
-            self.player.speed *= 0
+            if self.player.in_air:
+                self.player.speed *= 0.9
+            else:
+                self.player.speed *= 0.5
 if __name__ == '__main__':
     Window(0)

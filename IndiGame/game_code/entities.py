@@ -50,6 +50,7 @@ class UsualEntity:
         self.size = (96,96)
 
     def draw(self):
+        self.now_pos[0] = round(self.now_pos[0],0)
         if self.paid:
             self.cost = 0
             self.health = 0
