@@ -45,7 +45,7 @@ def load_settings():
 
 clock = pygame.time.Clock()
 # print(dir(pygame))
-font = pygame.font.SysFont('comicsansms', 25)
+font = pygame.font.SysFont('comicsansms', 20)
 
 walk_s = pygame.mixer.Sound('../audio/walk.ogg')
 coins_s = pygame.mixer.Sound('../audio/gold.ogg')
@@ -63,8 +63,6 @@ class Window:
 
         # print(self.player.testing())
         print(self.player.money)
-        print(self)
-
         self.inv_data = [[Hand((0, 0), True), Hand((0, 2), False),
                           Hand((0, 2), False),
                           Hand((0, 3), False), Hand((0, 4), False)],
@@ -98,6 +96,7 @@ class Window:
         self.player.max_health = settings['player']['max_health']
         self.player.health = self.player.max_health
         self.player.level = settings['player']['level']
+        self.player.regen = settings['player']['regen']
 
         print(len(self.inv_data))
         for i in range(40):
@@ -226,12 +225,13 @@ class Window:
             self.player.pos_y = self.level_data[-1].now_pos[1] - self.player.player.top + 448
             clock.tick(67)  # 67 is optimal
             for e in pygame.event.get():
+                print(e)
                 if e.type == pygame.QUIT:
                     self.save_settings()
                     self.event = False
                     quit(0)
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    self.upg.check_for_updates(mouse_rect, self.player)
+                    self.upg.check_for_updates(mouse_rect, self.player, screen)
                     if self.invsee:
                         self.upg.all_sprites.empty()
                         self.inv.get_cell(pygame.mouse.get_pos(), screen)
@@ -241,7 +241,6 @@ class Window:
                                 0] - 200 < w and not (
                                     self.upg.main_rect.colliderect(
                                         mouse_rect)) and 'Entity' in obj.get_type():
-                                print(obj.health)
                                 if obj.die is False:
                                     val = ObjIsNear(ob1=obj, player=self.player).getting_side()
                                     if val != [0, 0, 0, 0]:
@@ -252,7 +251,6 @@ class Window:
                                     obj.health -= self.player.player_power
                                     obj.die = True
                                     obj.paid = True
-                                print(obj.health)
 
                 # print(e)
                 if e == check or e == check_2:
@@ -320,14 +318,14 @@ class Window:
 
             text_money = self.player.money
             money = font.render('Money: ' + str(text_money), 1, (255, 55, 100))
-            screen.blit(money, (360, 10))
+            screen.blit(money, (20, 35))
 
             health = self.player.health = int(self.player.health)
             health_rend = font.render('Health: ' + str(health) + ' / ' + str(self.player.max_health), 1, (255, 55, 100))
-            screen.blit(health_rend, (360, 35))
+            screen.blit(health_rend, (20, 60))
 
             power = font.render('Power: ' + str(self.player.player_power), 1, (255, 55, 100))
-            screen.blit(power, (360, 60))
+            screen.blit(power, (20, 85))
             self.upg.draw(screen, self.player)
 
             if check_for_moving != self.player.pos_x:
@@ -345,7 +343,8 @@ class Window:
             "power": self.player.power,
             "upgrade_cost": self.player.upgrade_cost,
             "max_health": self.player.max_health,
-            "level": self.player.level
+            "level": self.player.level,
+            "regen": self.player.regen
         }
         for i in range(40):
             y = i // 8
@@ -364,6 +363,7 @@ class Window:
 
     def restart(self):
         if self.player.health <= 0:
+            self.save_settings()
             return self.__init__(self.lvl)
 
     def load_level(self):
@@ -378,9 +378,15 @@ class Window:
                                         additionally=block[3],
                                         image=block[-2][4:]))
             else:
-                self.level_data.append(
-                    obj_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen,
-                                        additionally=block[3]))
+                if 'entity' in block[4]:
+                    self.level_data.append(
+                        obj_type[block[4]](int(block[0]), int(block[1]), int(block[2]), screen,
+                                            additionally=block[3], power=int(block[5]), health=int(block[6]), cost=int(block[7])))
+                else:
+                    self.level_data.append(
+                        obj_type[block[-1]](int(block[0]), int(block[1]), int(block[2]), screen,
+                                            additionally=block[3]))
+
 
     def colliding(self, ob1, pl):
         side = GetSide(ob1=ob1, player=pl, l=self.player.left, r=self.player.right)
@@ -539,6 +545,6 @@ class Window:
             # if abs(self.player.speed) <= 10**-3:
             #     self.player.speed = 0
 
-            self.player.speed *= 0.4
+            self.player.speed *= 0
 if __name__ == '__main__':
     Window(0)

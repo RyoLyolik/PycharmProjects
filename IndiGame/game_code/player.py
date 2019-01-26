@@ -65,6 +65,8 @@ class Player:
     def draw_player(self, screen):
         if self.health <= 0:
             self.all_sprites.empty()
+        elif self.health > self.max_health:
+            self.health = self.max_health
         if self.right:
             self.sprite.image = self.image_default
         else:
