@@ -8,6 +8,7 @@ class Upgrade:
         self.all_sprites = pygame.sprite.Group()
         self.sprite = pygame.sprite.Sprite()
         self.show_description = False
+        self.main_rect = pygame.Rect(0, 0, 0, 0)
 
     def draw(self, screen, player):
         self.obj = player.hand_obj if player.hand_obj.get_type() != 'Hand' else player
@@ -67,7 +68,7 @@ class Upgrade:
 
             if self.obj == player:
                 player.max_health = int(round(((player.max_health)*1.04),0))
-                player.regen = round(player.regen * 1.05, 5)
+                player.regen = round(player.regen * 1.04, 5)
                 self.obj.power = int(round(((self.obj.power + 1) * 1.03), 0))
                 self.obj.upgrade_cost = int(round(((self.obj.upgrade_cost) * 1.06), 0))
 

@@ -4,6 +4,5 @@
 196 384 64 _ way:../textures/blocks/dirt/dirt_updown_linked.png usual
 132 320 64 _ way:../textures/blocks/grass/grass_right_linked.png usual
 196 320 64 _ way:../textures/blocks/grass/grass_leftdown_linked.png usual
-132 128 64 _ way:../textures/blocks/grass/grass.png usual
-320 196 64 _ bad_entity 1 14000 1
+320 196 64 _ bad_entity 1000 140000000000 90000000000
 0 0 1 1 CoordsBlock usual

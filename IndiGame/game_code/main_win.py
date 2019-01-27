@@ -143,7 +143,7 @@ class Window:
         while self.event:
             check_for_moving = self.player.pos_x
             check_for_collect = self.player.money
-            self.player.pos_x = round(self.player.pos_x, 0)
+            self.player.pos_x = round(self.player.pos_x, 1)
             self.player.speed = round(self.player.speed, 1)
             if abs(self.player.speed) <= 0.1:
                 self.player.speed = 0
@@ -171,12 +171,12 @@ class Window:
                         # print(obj.health, self.player.power)
                         obj.reload += 1
                         # print(obj.speed_down)
-                        if int(obj.now_pos[0] - self.player.player.left) < -32:
+                        if int(obj.now_pos[0] - self.player.player.left) <= -32:
                             obj.sprite.image = obj.image_default
                             obj.now_pos[0] += obj.speed
                             obj.right = True
                             obj.left = False
-                        elif int(obj.now_pos[0] - self.player.player.right) > 32 - obj.size[0]:
+                        elif int(obj.now_pos[0] - self.player.player.right) >= 32 - obj.size[0]:
                             obj.now_pos[0] -= obj.speed
                             obj.sprite.image = obj.image_flip
                             obj.left = True
@@ -245,6 +245,7 @@ class Window:
                                         mouse_rect)) and 'Entity' in obj.get_type():
                                 if obj.die is False:
                                     val = ObjIsNear(ob1=obj, player=self.player).getting_side()
+                                    # print(val)
                                     if val != [0, 0, 0, 0]:
                                         obj.health -= self.player.player_power
                                         obj.draw()
@@ -289,7 +290,6 @@ class Window:
             if self.player.pos_y < -1000:
                 self.player.health -= 1
 
-            # print(self.player.hand_obj)
             if self.player.hand_obj is not None and self.player.hand_obj.get_type() != 'Hand' and self.player.left:
                 self.player.hand_obj.draw(
                     (self.player.player.left + 12, self.player.player.top + 32), screen)
@@ -330,12 +330,14 @@ class Window:
             screen.blit(power, (20, 85))
             self.upg.draw(screen, self.player)
 
-            if check_for_moving != self.player.pos_x:
+            if check_for_moving != self.player.pos_x and not self.player.in_air:
                 walk_s.play(0)
 
             if check_for_collect != self.player.money:
                 coins_s.play(0)
-
+            if self.player.in_air:
+                self.player.stand_block = Air()
+            print(self.player.stand_block)
             pygame.display.flip()
 
     def save_settings(self):
@@ -399,6 +401,7 @@ class Window:
                 pl.in_air = False
                 pl.speed_down = 0
                 pl.player.bottom = ob1.now_pos[1] - 0
+                self.player.stand_block = ob1
 
             elif side[3] == 1 and pl.in_air:
                 pl.speed_down = 0
@@ -477,7 +480,7 @@ class Window:
 
         if self.player.player.right + 300 > w:
             for entity in self.level_data:
-                entity.now_pos[0] = round(entity.now_pos[0]-self.player.speed,0)
+                entity.now_pos[0] = round(entity.now_pos[0]-self.player.speed, 0)
             self.player.player.left -= self.player.speed
 
         if self.player.player.left - 100 < 0:
@@ -548,6 +551,6 @@ class Window:
             if self.player.in_air:
                 self.player.speed *= 0.9
             else:
-                self.player.speed *= 0.5
+                self.player.speed *= 0.6
 if __name__ == '__main__':
     Window(0)

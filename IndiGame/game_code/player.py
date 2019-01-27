@@ -1,6 +1,7 @@
 import pygame
 from loading_image import load_image
 from inventory_objects import Hand
+from blocks import *
 import gc
 
 size = w, h, = 720, 480
@@ -24,12 +25,12 @@ class Player:
         self.level = 1
 
         self.block_is_near = False
+        self.stand_block = None
 
         self.player_size = [64,64]
         self.speed = 5
         self.pos_x = 128
         self.pos_y = 60
-
 
         self.double_jump = 2
         self.in_air = True

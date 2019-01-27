@@ -13,6 +13,7 @@ class BlockUsual:
         self.start_pos = [pos_x, pos_y]
         self.now_pos = [pos_x, pos_y]
         self.image = image
+        self.coef = 1
         if self.image is None:
             self.sprite = None
             self.shell = pygame.draw.rect(screen, self.color, (pos_x, pos_y, size, size), 0)
@@ -48,3 +49,7 @@ class BadBlock(BlockUsual):
 
     def get_type(self):
         return 'Bad'
+
+class Air:
+    def __init__(self):
+        pass
